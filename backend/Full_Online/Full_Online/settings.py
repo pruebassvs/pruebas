@@ -74,10 +74,16 @@ WSGI_APPLICATION = 'Full_Online.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+   
+     "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "bcplkaqdiwgy2mchi4ky",
+        "USER": "ugmops7wtmwqc9tc",
+        "PASSWORD": "0RHSvlYFViacWud0CoG6",
+        "HOST": "bcplkaqdiwgy2mchi4ky-mysql.services.clever-cloud.com",
+        "PORT": "3306",
     }
+    
 }
 
 
