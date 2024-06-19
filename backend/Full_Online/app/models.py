@@ -92,7 +92,7 @@ class Cart(models.Model):
     date = models.DateField(auto_now_add=True)
 
     class Meta:
-        db_table = "Cart"
+        db_table = "cart"
         verbose_name = "Cart"
         verbose_name_plural = "Carts"
 
@@ -111,7 +111,7 @@ class CartDetail(models.Model):
         verbose_name_plural = "Cart_details"
 
     def __str__(self):
-        return f"Carrito id: {self.cart.id} - Producto: {self.product} - Cantidad: {self.quantity}"
+        return f"Cart id: {self.cart.id} - Product: {self.product} - Quantity: {self.quantity}"
 
 
 class PaymentModeType(models.Model):
