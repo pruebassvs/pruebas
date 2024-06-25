@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import UserSerializer
-from .models import CustomUser
+from .serializers import UserSerializer, ProductSerializer
+from .models import CustomUser, Product
 
 
 class LoginView(APIView):
@@ -31,3 +31,9 @@ class LogoutView(APIView):
     def post(self, request):
         logout(request)
         return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
