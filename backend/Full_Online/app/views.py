@@ -10,13 +10,14 @@ from knox.views import LoginView as KnoxLoginView
 from knox.views import LogoutView as KnoxLogoutView
 from knox.views import LogoutAllView as KnoxLogoutAllView
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from .permissions import IsAdminOrReadOnly
 
 from .serializers import UserSerializer, ProductSerializer
 from .models import CustomUser, Product
 
 
 class LoginView(KnoxLoginView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
 
     def post(self, request, format=None):
         serializer = AuthTokenSerializer(data=request.data)
@@ -61,7 +62,7 @@ class LogoutAllView(KnoxLogoutAllView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
 class RegisterView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [AllowAny]
 
     def post(self, request, format=None):
         try:
@@ -82,7 +83,7 @@ class RegisterView(APIView):
             )
 
 class ProductViewSet(viewsets.ModelViewSet):
-    
+    permission_classes = [IsAdminOrReadOnly]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
