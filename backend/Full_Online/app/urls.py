@@ -1,5 +1,5 @@
 from django.urls import path, include
-from app.views import LoginView, LogoutView, ListaView, ProductViewSet
+from app.views import ProductViewSet, LoginView, LogoutView, LogoutAllView, RegisterView
 from rest_framework import routers
 
 router = routers.DefaultRouter()
@@ -10,5 +10,7 @@ urlpatterns = [
     path("", include(router.urls)),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('users/', ListaView.as_view(), name='users'),
+    path('logout_all/', LogoutAllView.as_view(), name='logout_all'),
+    path('register/', RegisterView.as_view(), name='register')
+   
 ]

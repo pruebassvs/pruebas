@@ -44,7 +44,7 @@ class BrandType(models.Model):
 
 
 class SizeType(models.Model):
-    size = models.CharField(max_length=10)  
+    size = models.CharField(max_length=10,)  
 
     class Meta:
         db_table = "size"

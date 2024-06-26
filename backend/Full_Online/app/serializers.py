@@ -9,9 +9,25 @@ class UserSerializer(serializers.ModelSerializer):
             "id",
             "username",
             "email",
+            "password",
             "phone",
-            "identification_number"
+            "identification_number",
+            "is_staff",
         ]
+        extra_kwargs = {
+            "password": {"write_only": True}, 
+            "id": {"read_only": True}, 
+        }
+    def create(self, validated_data):
+       
+        user = CustomUser.objects.create_user(
+            username=validated_data["username"],
+            email=validated_data["email"],
+            password=validated_data["password"],
+            identification_number=validated_data.get("identification_number"),
+            phone=validated_data.get("phone"),
+        )
+        return user
 
 class ShoeModelTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -52,7 +68,16 @@ class ProductSerializer(serializers.ModelSerializer):
             "size",
             "color"
         ]
-
+    def validate_stock(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Stock must be a non-negative integer.")
+        return value
+    
+    def validate_price(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Price must be a positive number.")
+        return value
+    
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['brand'] = BrandTypeSerializer(instance.brand).data if instance.brand else None
