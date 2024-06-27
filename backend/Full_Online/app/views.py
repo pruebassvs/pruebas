@@ -101,7 +101,7 @@ class CartViewSet(viewsets.ModelViewSet):
             if created:
                 serializer = CartSerializer(cart)
                 response_data = {
-                "message": "Product added to cart successfully",
+                "message": " Cart added successfully",
                 "cart": serializer.data
             }
                 return Response(response_data, status=status.HTTP_201_CREATED)
