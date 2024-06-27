@@ -88,13 +88,15 @@ class ProductSerializer(serializers.ModelSerializer):
     
 class CartDetailSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
-
+    cart = serializers.PrimaryKeyRelatedField(queryset=Cart.objects.all()) 
+    
     class Meta:
         model = CartDetail
         fields = [
             "id",
             "quantity",
             "product",
+            "cart"
         ]
 
 

@@ -99,7 +99,12 @@ class CartViewSet(viewsets.ModelViewSet):
         try:
             cart, created = CartService.create_cart(request.user)
             if created:
-                return Response({"message": "Cart created successfully"}, status=status.HTTP_201_CREATED)
+                serializer = CartSerializer(cart)
+                response_data = {
+                "message": "Product added to cart successfully",
+                "cart": serializer.data
+            }
+                return Response(response_data, status=status.HTTP_201_CREATED)
             else:
                 return Response({"message": "Cart already exists"}, status=status.HTTP_200_OK)
         except Exception as e:
@@ -119,7 +124,13 @@ class CartViewSet(viewsets.ModelViewSet):
         quantity = request.data.get("quantity", 1)
         try:
             CartService.add_product_to_cart(request.user, product_id, quantity)
-            return Response({"message": "Product added to cart successfully"})
+            cart = Cart.objects.get(user=request.user)
+            serializer = CartSerializer(cart)
+            response_data = {
+                "message": "Product added to cart successfully",
+                "cart": serializer.data
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
         except Product.DoesNotExist:
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
         except ValueError as e:
