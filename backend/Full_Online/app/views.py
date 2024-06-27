@@ -11,9 +11,11 @@ from knox.views import LogoutView as KnoxLogoutView
 from knox.views import LogoutAllView as KnoxLogoutAllView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .permissions import IsAdminOrReadOnly
+from rest_framework.decorators import action
+from .services.cart_service import CartService
+from .serializers import UserSerializer, ProductSerializer, CartSerializer, CartDetailSerializer
+from .models import  Product, Cart,CartDetail
 
-from .serializers import UserSerializer, ProductSerializer
-from .models import CustomUser, Product
 
 
 class LoginView(KnoxLoginView):
@@ -87,3 +89,65 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+class CartViewSet(viewsets.ModelViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=["post"])
+    def create_cart(self, request):
+        try:
+            cart, created = CartService.create_cart(request.user)
+            if created:
+                return Response({"message": "Cart created successfully"}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"message": "Cart already exists"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=["delete"])
+    def delete_cart(self, request):
+        try:
+            CartService.delete_cart(request.user)
+            return Response({"message": "Cart deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        except Cart.DoesNotExist:
+            return Response({"error": "Cart not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=False, methods=["post"])
+    def add_product(self, request):
+        product_id = request.data.get("product_id")
+        quantity = request.data.get("quantity", 1)
+        try:
+            CartService.add_product_to_cart(request.user, product_id, quantity)
+            return Response({"message": "Product added to cart successfully"})
+        except Product.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=["get"])
+    def get_items(self, request):
+        try:
+            cart, _ = CartService.create_cart(request.user)
+            items = CartDetail.objects.filter(cart=cart)
+            serializer = CartDetailSerializer(items, many=True)
+            cart_response = {
+                "cart_id": cart.id,
+                "created_date": cart.date,
+                "email": cart.user.email,
+                "items": serializer.data,
+            }
+            return Response(cart_response)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=["delete"])
+    def remove_item(self, request):
+        item_id = request.data.get("item_id")
+        try:
+            CartService.remove_item_from_cart(item_id)
+            return Response({"message": "Item removed from cart successfully"})
+        except CartDetail.DoesNotExist:
+            return Response({"error": "Item not found in cart"}, status=status.HTTP_404_NOT_FOUND)

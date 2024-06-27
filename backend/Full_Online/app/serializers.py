@@ -85,3 +85,23 @@ class ProductSerializer(serializers.ModelSerializer):
         representation['size'] = SizeTypeSerializer(instance.size).data if instance.size else None
         representation['color'] = ColorTypeSerializer(instance.color).data if instance.color else None
         return representation
+    
+class CartDetailSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+
+    class Meta:
+        model = CartDetail
+        fields = [
+            "id",
+            "quantity",
+            "product",
+        ]
+
+
+class CartSerializer(serializers.ModelSerializer):
+    user_email = serializers.EmailField(source='user.email', read_only=True)
+    items = CartDetailSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Cart
+        fields = "__all__"
