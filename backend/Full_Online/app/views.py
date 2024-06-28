@@ -9,12 +9,13 @@ from knox.models import AuthToken
 from knox.views import LoginView as KnoxLoginView
 from knox.views import LogoutView as KnoxLogoutView
 from knox.views import LogoutAllView as KnoxLogoutAllView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from .permissions import IsAdminOrReadOnly
 from rest_framework.decorators import action
 from .services.cart_service import CartService
-from .serializers import UserSerializer, ProductSerializer, CartSerializer, CartDetailSerializer
-from .models import  Product, Cart,CartDetail
+from .services.purchase_service import PurchaseService
+from .serializers import UserSerializer, ProductSerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer
+from .models import  Product, Cart,CartDetail, Purchase, PurchaseDetail
 
 
 
@@ -135,8 +136,6 @@ class CartViewSet(viewsets.ModelViewSet):
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
         except ValueError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=["get"])
     def get_items(self, request):
@@ -168,3 +167,37 @@ class CartViewSet(viewsets.ModelViewSet):
             {"error": "Direct delete not allowed. Use the delete_cart action instead."},
             status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
+        
+class PurchaseViewSet(viewsets.ModelViewSet):
+    queryset = Purchase.objects.all()
+    serializer_class = PurchaseSerializer
+    permission_classes = [IsAdminUser]
+
+    @action(detail=False, methods=["get"], permission_classes=[permissions.IsAuthenticated])
+    def user_purchases(self, request):
+        purchases = Purchase.objects.filter(user=request.user)
+        serializer = PurchaseSerializer(purchases, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=["post"], permission_classes=[permissions.IsAuthenticated])
+    def confirm_purchase(self, request):
+        try:
+            user = request.user
+            cart = Cart.objects.get(user=user) 
+
+            purchase, purchase_details = PurchaseService.confirm_purchase(user, cart)
+
+            purchase_serializer = PurchaseSerializer(purchase)
+            details_serializer = PurchaseDetailSerializer(purchase_details, many=True)
+
+            response_data = {
+                "message": "Compra realizada exitosamente",
+                "purchase": purchase_serializer.data,
+                "details": details_serializer.data,
+            }
+
+            return Response(response_data, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+

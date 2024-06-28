@@ -36,9 +36,7 @@ class CartService:
             cart_item.quantity += quantity
             cart_item.save()
         
-        product.stock -= quantity
-        product.save()
-    
+        
     @staticmethod
     def remove_item_from_cart(item_id):
         item = get_object_or_404(CartDetail, id=item_id)

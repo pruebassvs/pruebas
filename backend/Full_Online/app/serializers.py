@@ -107,3 +107,35 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = "__all__"
+
+    
+class PurchaseDetailSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+    purchase = serializers.PrimaryKeyRelatedField(queryset=Purchase.objects.all()) 
+    
+
+    class Meta:
+        model = PurchaseDetail
+        fields = ["id",
+                  "product", 
+                  "quantity", 
+                  "price",
+                  "purchase"
+        ]
+        
+class PurchaseSerializer(serializers.ModelSerializer):
+    user=UserSerializer()
+    payment_type=serializers.PrimaryKeyRelatedField(queryset=PaymentModeType.objects.all())
+    details= PurchaseDetailSerializer(many=True, read_only=True) 
+
+    class Meta:
+        model = Purchase
+        fields = [
+            "id",
+            "invoice_number",
+            "date",
+            "user",
+            "total",
+            "details",
+            "payment_type",
+        ]
