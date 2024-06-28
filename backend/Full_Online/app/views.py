@@ -175,9 +175,20 @@ class PurchaseViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"], permission_classes=[permissions.IsAuthenticated])
     def user_purchases(self, request):
-        purchases = Purchase.objects.filter(user=request.user)
-        serializer = PurchaseSerializer(purchases, many=True)
-        return Response(serializer.data)
+        try:
+            purchases = Purchase.objects.filter(user=request.user)
+            serializer = PurchaseSerializer(purchases, many=True)
+            return Response(serializer.data)
+        except Purchase.DoesNotExist:
+            return Response(
+                {"error": "No purchases found for this user."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     @action(detail=False, methods=["post"], permission_classes=[permissions.IsAuthenticated])
     def confirm_purchase(self, request):

@@ -144,7 +144,7 @@ class Purchase(models.Model):
 
 class PurchaseDetail(models.Model):
     quantity = models.PositiveIntegerField()
-    purchase = models.ForeignKey(Purchase, on_delete=models.CASCADE)
+    purchase = models.ForeignKey(Purchase, on_delete=models.CASCADE, related_name='details')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     price = models.FloatField()  
 
