@@ -191,7 +191,7 @@ class PurchaseViewSet(viewsets.ModelViewSet):
             details_serializer = PurchaseDetailSerializer(purchase_details, many=True)
 
             response_data = {
-                "message": "Compra realizada exitosamente",
+                "message": "Purchase completed successfully",
                 "purchase": purchase_serializer.data,
                 "details": details_serializer.data,
             }
