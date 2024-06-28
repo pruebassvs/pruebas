@@ -159,6 +159,12 @@ class CartViewSet(viewsets.ModelViewSet):
         item_id = request.data.get("item_id")
         try:
             CartService.remove_item_from_cart(item_id)
-            return Response({"message": "Item removed from cart successfully"})
+            return Response({"message": "Item removed from cart successfully"},status=status.HTTP_200_OK)
         except CartDetail.DoesNotExist:
             return Response({"error": "Item not found in cart"}, status=status.HTTP_404_NOT_FOUND)
+        
+    def destroy(self, request, *args, **kwargs):
+        return Response(
+            {"error": "Direct delete not allowed. Use the delete_cart action instead."},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
