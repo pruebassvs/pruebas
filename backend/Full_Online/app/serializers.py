@@ -13,6 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
             "phone",
             "identification_number",
             "is_staff",
+            "adress"
         ]
         extra_kwargs = {
             "password": {"write_only": True}, 
@@ -26,6 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
             password=validated_data["password"],
             identification_number=validated_data.get("identification_number"),
             phone=validated_data.get("phone"),
+            adress=validated_data.get("adress"),
         )
         return user
 
@@ -108,7 +110,19 @@ class CartSerializer(serializers.ModelSerializer):
         model = Cart
         fields = "__all__"
 
-    
+class DeliveryStatusTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeliveryStatusType
+        fields = ["id", "description", "change_date"]
+
+
+class DeliverySerializer(serializers.ModelSerializer):
+    delivery_status = serializers.SlugRelatedField(slug_field='description', queryset=DeliveryStatusType.objects.all())
+
+    class Meta:
+        model = Delivery
+        fields = ["id", "purchase", "tracking_number", "delivery_address", "estimated_date", "delivery_date", "delivery_status",]
+
 class PurchaseDetailSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
     purchase = serializers.PrimaryKeyRelatedField(queryset=Purchase.objects.all()) 
@@ -126,7 +140,9 @@ class PurchaseDetailSerializer(serializers.ModelSerializer):
 class PurchaseSerializer(serializers.ModelSerializer):
     user=UserSerializer()
     payment_type=serializers.PrimaryKeyRelatedField(queryset=PaymentModeType.objects.all())
-    details= PurchaseDetailSerializer(many=True, read_only=True) 
+    details= PurchaseDetailSerializer(many=True, read_only=True)
+    delivery= DeliverySerializer()
+    
 
     class Meta:
         model = Purchase
@@ -138,4 +154,11 @@ class PurchaseSerializer(serializers.ModelSerializer):
             "total",
             "details",
             "payment_type",
+            "delivery"
+           
         ]
+        
+class DeliveryHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeliveryHistory
+        fields = ["id", "description", "change_date"]   

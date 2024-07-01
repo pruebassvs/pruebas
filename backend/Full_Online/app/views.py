@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
+from django.db import transaction
 from rest_framework import status, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,8 +15,9 @@ from .permissions import IsAdminOrReadOnly
 from rest_framework.decorators import action
 from .services.cart_service import CartService
 from .services.purchase_service import PurchaseService
-from .serializers import UserSerializer, ProductSerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer
-from .models import  Product, Cart,CartDetail, Purchase, PurchaseDetail
+from .services.delivery_service import DeliveryService
+from .serializers import UserSerializer, ProductSerializer,DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer
+from .models import  Product, Cart,CartDetail, Purchase, DeliveryStatusType, Delivery
 
 
 
@@ -196,15 +198,18 @@ class PurchaseViewSet(viewsets.ModelViewSet):
             user = request.user
             cart = Cart.objects.get(user=user) 
 
-            purchase, purchase_details = PurchaseService.confirm_purchase(user, cart)
-
-            purchase_serializer = PurchaseSerializer(purchase)
+            with transaction.atomic():
+                purchase, purchase_details = PurchaseService.confirm_purchase(user, cart)
+                delivery= DeliveryService.create_delivery(purchase)
+        
+            
             details_serializer = PurchaseDetailSerializer(purchase_details, many=True)
+            delivery_serializer = DeliverySerializer(delivery)
 
             response_data = {
                 "message": "Purchase completed successfully",
-                "purchase": purchase_serializer.data,
                 "details": details_serializer.data,
+                "delivery": delivery_serializer.data
             }
 
             return Response(response_data, status=status.HTTP_201_CREATED)
@@ -212,3 +217,35 @@ class PurchaseViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+class ChangeDeliveryStatusAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request):
+        try:
+            purchase_id = request.data.get('purchase_id')
+            status_description = request.data.get('status_description')
+
+            if not purchase_id:
+                return Response({'error': 'purchase_id is requered'}, status=status.HTTP_400_BAD_REQUEST)
+            if not status_description:
+                return Response({'error': 'status_description is required'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if status_description not in dict(DeliveryStatusType.STATUS_CHOICES):
+                return Response({'error': 'Invalid status description,Choices avaibles P,T,C'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            purchase = Purchase.objects.get(id=purchase_id)
+            updated_delivery, delivery_history = DeliveryService.update_delivery_status_with_history(purchase, status_description)
+
+            return Response({
+                'message': 'Delivery status updated successfully',
+                'delivery': DeliverySerializer(updated_delivery).data,
+                'delivery_history': DeliveryHistorySerializer(delivery_history, many=True).data
+            }, status=status.HTTP_200_OK)
+        except Delivery.DoesNotExist:
+            return Response({'error': 'Delivery not found'}, status=status.HTTP_404_NOT_FOUND)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    

@@ -3,6 +3,7 @@ from ..utils.utils import generate_invoice_number
 from django.db.models import Sum, F
 
 
+
 class PurchaseService:
     @staticmethod
     def create_purchase(user, invoice_number, payment_type_id, total):
@@ -27,6 +28,9 @@ class PurchaseService:
     @staticmethod
     def confirm_purchase(user, cart):
         try:
+            if cart.items.count() == 0:
+                raise ValueError("There are no products in the cart to proceed with the purchase.")
+            
             total = cart.items.aggregate(
                 total=Sum(F("product__price") * F("quantity"))
             )["total"]
@@ -43,7 +47,7 @@ class PurchaseService:
                 payment_type_id=1,
                 total=total,
             )
-
+            
             purchase_details = []
             for item in cart.items.all():
                 purchase_detail = PurchaseService.create_purchase_detail(
@@ -57,10 +61,15 @@ class PurchaseService:
             for item in cart.items.all():
                     item.product.stock -= item.quantity
                     item.product.save()
-         
+        
+            
             cart.items.all().delete()
+            
+            
 
             return purchase, purchase_details
+        
+            
 
         except Exception as e:
             raise e

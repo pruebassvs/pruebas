@@ -6,8 +6,9 @@ class CustomUser(AbstractUser):
     email = models.EmailField(max_length=30, unique=True)
     identification_number = models.IntegerField(null=True, blank=True, unique=True)
     phone = models.CharField(max_length=45, null=True, blank=True)
+    adress =models.CharField(max_length=45, null=True, blank=True)
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "password","identification_number", "phone"]
+    REQUIRED_FIELDS = ["username", "password","identification_number", "phone", "adress"]
 
     class Meta:
         db_table = "users"
@@ -132,6 +133,8 @@ class Purchase(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     total = models.IntegerField(default=0)
     payment_type = models.ForeignKey(PaymentModeType, on_delete=models.SET_NULL, null=True, blank=True)
+    
+
 
     class Meta:
         db_table = "purchase"
@@ -164,6 +167,7 @@ class DeliveryStatusType(models.Model):
         ('C', 'Completed'),
     ]
     description = models.CharField(max_length=45, choices=STATUS_CHOICES)
+    change_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = "delivery_status"
@@ -171,7 +175,7 @@ class DeliveryStatusType(models.Model):
         verbose_name_plural = "delivery_status"
 
     def __str__(self):
-        return dict(self.STATUS_CHOICES)[self.description]
+        return f"{self.get_description_display()} - {self.change_date}"
 
 
 class Delivery(models.Model):
@@ -190,3 +194,15 @@ class Delivery(models.Model):
     def __str__(self):
         return f"Tracking: {self.tracking_number}"
 
+class DeliveryHistory(models.Model):
+    delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE, related_name='history')
+    description = models.CharField(max_length=45)
+    change_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "delivery_history"
+        verbose_name = "Delivery History"
+        verbose_name_plural = "Delivery Histories"
+
+    def __str__(self):
+        return f"{self.delivery} - {self.description} - {self.change_date}"

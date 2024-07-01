@@ -76,6 +76,20 @@ class DeliveryAdmin(admin.ModelAdmin):
     ordering = ('-estimated_date',)  
 
 @admin.register(get_user_model())
-class UserAdmin(UserAdmin):
-    pass
+class CustomUserAdmin(UserAdmin):
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'email', 'adress')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+    )
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'adress')
+    search_fields = ('username', 'email', 'first_name', 'last_name', 'adress')
+    
+@admin.register(DeliveryHistory)
+class DeliveryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'description', 'change_date')
+    list_filter = ('description','change_date')
+    search_fields = ('description','change_date')
+    ordering = ('-change_date',)  
 
