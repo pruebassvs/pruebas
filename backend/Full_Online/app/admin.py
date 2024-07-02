@@ -68,13 +68,6 @@ class DeliveryStatusTypeAdmin(admin.ModelAdmin):
     list_filter = ('description',)
     ordering = ('description',)
 
-@admin.register(Delivery)
-class DeliveryAdmin(admin.ModelAdmin):
-    list_display = ('purchase', 'tracking_number', 'delivery_address', 'estimated_date', 'delivery_date', 'delivery_status')
-    list_filter = ('delivery_status', 'estimated_date', 'delivery_date')
-    search_fields = ('tracking_number', 'purchase__invoice_number')
-    ordering = ('-estimated_date',)  
-
 @admin.register(get_user_model())
 class CustomUserAdmin(UserAdmin):
     fieldsets = (

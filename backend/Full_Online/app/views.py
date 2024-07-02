@@ -218,7 +218,7 @@ class PurchaseViewSet(viewsets.ModelViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class ChangeDeliveryStatusAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    
 
     def patch(self, request):
         try:
@@ -248,4 +248,17 @@ class ChangeDeliveryStatusAPIView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-    
+    def get(self, request):
+        try:
+            deliveries= Delivery.objects.all()
+            if not deliveries:
+                return Response ({"error": "No deliveries founded "},
+                status=status.HTTP_404_NOT_FOUND)
+            
+            deliveries_all = DeliverySerializer(deliveries, many=True)
+            return Response({
+                'message': 'Delivery status ',
+                'delivery': deliveries_all.data,
+                }, status=status.HTTP_200_OK)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
