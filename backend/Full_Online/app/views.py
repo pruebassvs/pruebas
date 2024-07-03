@@ -14,6 +14,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from .permissions import IsAdminOrReadOnly
 from rest_framework.decorators import action
 from .services.cart_service import CartService
+from .services.stripe_service import StripeService
 from .services.purchase_service import PurchaseService
 from .services.delivery_service import DeliveryService
 from .serializers import UserSerializer, ProductSerializer,DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer
@@ -197,8 +198,13 @@ class PurchaseViewSet(viewsets.ModelViewSet):
         try:
             user = request.user
             cart = Cart.objects.get(user=user) 
-
+            total_amount = sum(item.product.price * item.quantity for item in cart.items.all())
+            
             with transaction.atomic():
+                amount_in_cents = int(total_amount * 100) 
+                payment_method = 'pm_card_visa'
+                payment_intent = StripeService.create_payment_intent(amount= amount_in_cents)
+                StripeService.confirm_payment_intent(payment_intent['id'], payment_method)
                 purchase, purchase_details = PurchaseService.confirm_purchase(user, cart)
                 delivery= DeliveryService.create_delivery(purchase)
         
@@ -209,7 +215,8 @@ class PurchaseViewSet(viewsets.ModelViewSet):
             response_data = {
                 "message": "Purchase completed successfully",
                 "details": details_serializer.data,
-                "delivery": delivery_serializer.data
+                "delivery": delivery_serializer.data,
+                "payment_intent": payment_intent['id']  ,
             }
 
             return Response(response_data, status=status.HTTP_201_CREATED)
