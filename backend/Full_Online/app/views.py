@@ -89,7 +89,7 @@ class RegisterView(APIView):
             )
 
 class ProductViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAdminOrReadOnly]
+   
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
