@@ -1,4 +1,4 @@
-export interface ShoeModelType {
+  export interface ShoeModelType {
     id: number;
     model: string;
   }
@@ -41,7 +41,7 @@ export interface Product {
     color: ColorType | null; 
 }
 
-export interface Cart {
+  export interface Cart {
     id: number;
     user_email: string;
     items: Item[];
@@ -49,7 +49,7 @@ export interface Cart {
     user: number
 } 
 
-export interface Item {
+  export interface Item {
     id: number;
     quantity: number;
     product: Product;
@@ -59,4 +59,106 @@ export interface Item {
     product_id: number, 
     quantity?: number
   }
+
+  export interface AddProductResponse {
+    message: string;
+    cart: Cart;
+  }
+
+  export interface RemoveItemRequest {
+    item_id: number;
+  }
+
+  export interface RemoveItemResponse {
+    message: string;
+  }
+ 
+  export interface NewUser {
+    username: string;
+    email: string;
+    password: string;
+    identification_number?: number;
+    phone?: number;
+    adress?:string;
+  }
+
+  export interface User {
+    id: number;
+    username: string;
+    email: string;
+    phone?: string;
+    identification_number?: number;
+    is_staff: boolean;
+    adress?: string;
+  }
+
+  export interface UserRegistrationResponse {
+    user: User;
+    message: string;
+  }
+
+  export interface LoginResponse {
+    user: User;
+    token: string;
+    is_staff: boolean;
+  }
+
+  export interface LogoutResponse {
+    success: string;
+  }
   
+  export interface Purchase {
+    id: number;
+    invoice_number: string;
+    date: string; 
+    user: User;  
+    total: number;
+    details: PurchaseDetail[];
+    payment_type: number;  
+    delivery: Delivery;  
+  }
+
+  export interface PurchaseDetail {
+    id: number;
+    product: Product;
+    quantity: number;
+    price: number;
+    purchase: number;
+  }
+
+  export interface PurchaseConfirmationResponse {
+    message: string;
+    details: PurchaseDetail[];
+    delivery: Delivery;
+    payment_intent: string;
+  }
+
+  export type DeliveryStatus = 'P' | 'T' | 'C';
+
+
+  export interface Delivery {
+    id: number;
+    purchase: number;
+    tracking_number: string;
+    delivery_address: string;
+    estimated_date: string | null;
+    delivery_date: string | null;
+    delivery_status: DeliveryStatus;
+  }
+
+  export interface DeliveryHistory {
+    id: number;
+    description: DeliveryStatus;
+    change_date: string;
+  }
+
+  export interface DeliveryStatusResponse {
+    message: string;
+    delivery: Delivery;
+    delivery_history: DeliveryHistory[];
+  }
+
+  export interface UpdateDeliveryStatusRequest {
+    purchase_id: number;
+    status_description: DeliveryStatus;
+  }
