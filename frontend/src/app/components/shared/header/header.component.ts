@@ -11,8 +11,7 @@ import { CommonModule } from '@angular/common';
 export class HeaderComponent {
   isMenuOpen = false;
   isBannerVisible = true;
-  isModalOpen = true;
-  isAsideOpen = true;
+
 
   closeBanner() {
     this.isBannerVisible = false;
@@ -20,10 +19,6 @@ export class HeaderComponent {
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
-  closeModal() {
-    this.isModalOpen = false;
-  }
-  closeAside() {
-    this.isAsideOpen = false;
-  }
+ 
+
 }
