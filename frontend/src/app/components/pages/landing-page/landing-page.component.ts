@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { CarouselComponent } from '../../component/carousel/carousel.component';
 import { CollectionsComponent } from '../../component/collections/collections.component';
 
