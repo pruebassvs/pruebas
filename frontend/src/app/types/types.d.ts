@@ -88,8 +88,14 @@ export interface Product {
     email: string;
     phone?: string;
     identification_number?: number;
+    password?:string
     is_staff: boolean;
     adress?: string;
+  }
+  export interface UserLogin { 
+    username: string;
+    email: string;
+    password:string
   }
 
   export interface UserRegistrationResponse {
