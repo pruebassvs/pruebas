@@ -25,7 +25,7 @@ class ShoeModelTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('model', 'brand', 'color', 'size', 'price', 'stock')
+    list_display = ('model', 'brand', 'color', 'size', 'price', 'stock','image','detail')
     list_filter = ('brand', 'color', 'size')
     search_fields = ('model__model', 'brand__description', 'color__description', 'size__size')
     ordering = ('model', 'brand', 'color', 'size')

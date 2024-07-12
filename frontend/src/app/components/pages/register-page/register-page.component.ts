@@ -10,7 +10,7 @@ import {
   AbstractControl,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../services/auth-service/auth-service.service';
+import { AuthService } from '../../../services/auth-service/auth.service';
 import { NewUser} from '../../../types/types';
 import Swal from 'sweetalert2';
 

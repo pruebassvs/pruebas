@@ -3,11 +3,13 @@ import { LandingPageComponent } from './components/pages/landing-page/landing-pa
 import { LoginPageComponent } from './components/pages/login-page/login-page.component';
 import { RegisterPageComponent } from './components/pages/register-page/register-page.component';
 import { NotFoundComponent } from './components/component/not-found/not-found.component';
+import { ProductListComponent } from './components/pages/product-list/product-list.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     {path:"home", component:LandingPageComponent},
     {path:"login", component:LoginPageComponent},
     {path:"register", component: RegisterPageComponent},
+    {path:"products", component: ProductListComponent},
     { path: '**', component: NotFoundComponent },
 ];

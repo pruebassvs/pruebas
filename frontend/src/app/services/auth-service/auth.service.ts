@@ -13,6 +13,7 @@ import Cookies from 'universal-cookie';
 export class AuthService {
   private cookies = new Cookies();
   public isLogged = new BehaviorSubject<boolean>(this.checkIsLogged());
+  isLogged$=this.isLogged.asObservable()
   public isAdmin = new BehaviorSubject<boolean>(this.checkIsAdmin());
   public userEmail = new BehaviorSubject<string>(
     this.cookies.get('userEmail') || ''

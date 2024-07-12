@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { CarouselComponent } from '../../component/carousel/carousel.component';
 import { CollectionsComponent } from '../../component/collections/collections.component';
+import { RouterLink } from '@angular/router';
+RouterLink
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [CarouselComponent, CollectionsComponent],
+  imports: [CarouselComponent, CollectionsComponent, RouterLink],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.css'
 })
