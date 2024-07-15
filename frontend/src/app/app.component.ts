@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from './services/auth-service/auth.service';
+import { Router } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/shared/header/header.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
@@ -12,6 +14,12 @@ import { CookieConsentComponent } from './components/component/cookie-consent/co
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
-  title = 'frontend';
+export class AppComponent implements OnInit {
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit() {
+    if (!this.authService.checkIsLogged()) {
+      this.router.navigate(['/login']);
+    }
+  }
 }

@@ -51,7 +51,6 @@ class LoginView(KnoxLoginView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
 class LogoutView(KnoxLogoutView):
-    permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
         try:

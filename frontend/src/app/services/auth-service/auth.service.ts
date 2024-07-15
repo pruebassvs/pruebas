@@ -29,7 +29,6 @@ export class AuthService {
       if (now < expirationTime) {
         return true;
       } else {
-        this.logout().subscribe();
         return false;
       }
     }
@@ -76,7 +75,12 @@ export class AuthService {
       .post<LogoutResponse>(ENDPOINT + 'logout/', {})
       .pipe(
         tap(() => {
-         this.clearSession()
+          this.isLogged.next(false);
+          this.isAdmin.next(false);
+          this.cookies.remove('userEmail');
+          this.cookies.remove('token');
+          this.cookies.remove('isAdmin');
+          this.cookies.remove('expiresIn');
         }),
         catchError((error) => {
           console.error('Logout error:', error);
@@ -100,13 +104,5 @@ export class AuthService {
 
   }
 
-  private clearSession():void{
-    this.isLogged.next(false);
-    this.isAdmin.next(false);
-    this.cookies.remove('userEmail');
-    this.cookies.remove('token');
-    this.cookies.remove('isAdmin');
-    this.cookies.remove('expiresIn');
-  }
   
 }
