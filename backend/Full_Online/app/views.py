@@ -21,6 +21,7 @@ from .serializers import UserSerializer, ProductSerializer,DeliverySerializer,De
 from .models import  Product, Cart,CartDetail, Purchase, DeliveryStatusType, Delivery
 from knox.settings import knox_settings
 from datetime import datetime, timezone
+import random
 
 
 
@@ -51,6 +52,7 @@ class LoginView(KnoxLoginView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
 class LogoutView(KnoxLogoutView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
         try:
@@ -95,6 +97,18 @@ class ProductViewSet(viewsets.ModelViewSet):
    
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    
+    @action(detail=False, methods=['get'])
+    def get_random_product_excluding_id(self, request):
+        current_product_id = request.query_params.get('current_product_id')
+        queryset = self.get_queryset().exclude(id=current_product_id)
+        random_product = random.choice(queryset) if queryset.exists() else None
+        
+        if random_product:
+            serializer = self.get_serializer(random_product)
+            return Response(serializer.data)
+        else:
+            return Response({'error': 'No products available excluding the current one.'}, status=404)
 
 class CartViewSet(viewsets.ModelViewSet):
     queryset = Cart.objects.all()

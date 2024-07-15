@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
 
 import { HttpClient} from '@angular/common/http';
 import { ENDPOINT } from '../../utils/utils';
@@ -32,5 +33,14 @@ export class ProductService{
       })
     );
   }
-  
+  public getRandomProductExcluding(currentProductId: number): Observable<Product> {
+    const params = new HttpParams().set('currentProductId', currentProductId.toString());
+    return this.http.get<Product>(`${ENDPOINT}products/get_random_product_excluding_id/`, { params }).pipe(
+      catchError((error) => {
+        console.error('Error occurred while fetching random product:', error);
+        throw error;
+      })
+    );
+  }
 }
+  
