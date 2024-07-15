@@ -20,7 +20,7 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  public checkIsLogged() {
+  public checkIsLogged():boolean {
     const token = this.cookies.get('token');
     const expiresIn = this.cookies.get('expiresIn');
     if (token && expiresIn) {
@@ -36,7 +36,7 @@ export class AuthService {
     return false;
   }
 
-  public checkIsAdmin() {
+  public checkIsAdmin():boolean {
     return !!this.cookies.get('isAdmin');
   }
 
@@ -100,7 +100,7 @@ export class AuthService {
 
   }
 
-  private clearSession(){
+  private clearSession():void{
     this.isLogged.next(false);
     this.isAdmin.next(false);
     this.cookies.remove('userEmail');
