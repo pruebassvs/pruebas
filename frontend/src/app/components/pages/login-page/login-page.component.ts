@@ -67,6 +67,7 @@ export class LoginPageComponent {
                 
               });
               console.log(res.user)
+              console.log(res.expires_in)
               this.router.navigate(['/home']);
               
             }

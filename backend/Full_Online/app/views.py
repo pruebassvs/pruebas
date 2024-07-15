@@ -19,6 +19,8 @@ from .services.purchase_service import PurchaseService
 from .services.delivery_service import DeliveryService
 from .serializers import UserSerializer, ProductSerializer,DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer
 from .models import  Product, Cart,CartDetail, Purchase, DeliveryStatusType, Delivery
+from knox.settings import knox_settings
+from datetime import datetime, timezone
 
 
 
@@ -36,11 +38,13 @@ class LoginView(KnoxLoginView):
             user = serializer.validated_data["user"]
             login(request, user)
             user_serializer = UserSerializer(user)
-            _, token = AuthToken.objects.create(user)
+            token_instance, token = AuthToken.objects.create(user)
             isAdmin = request.user.is_staff
+            expiration_date = token_instance.expiry
+            expires_in = (expiration_date - datetime.now(timezone.utc)).total_seconds()
 
             return Response(
-                {"user": user_serializer.data, "token": token, "is_staff": isAdmin},
+                {"user": user_serializer.data, "token": token, "is_staff": isAdmin, "expires_in": expires_in},
                 status=status.HTTP_200_OK,
             )
         except ValidationError as e:

@@ -107,6 +107,7 @@ export interface Product {
     user: User;
     token: string;
     is_staff: boolean;
+    expires_in: number;
   }
 
   export interface LogoutResponse {
