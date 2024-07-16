@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { OnInit } from '@angular/core';
-import { ProductService } from '../../../services/auth-service/product.service';
+import { ProductService } from '../../../services/product/product.service';
 import { Product } from '../../../types/types';
 
 @Component({

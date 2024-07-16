@@ -6,13 +6,14 @@
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
-        </button>
+        </button> 
 
   <div class="mt-4 space-y-6">
     <ul class="space-y-4">
+      @for (item of cart.items; track $index) {
       <li class="flex items-center gap-4">
         <img
-          src="https://img.freepik.com/foto-gratis/zapatilla-deporte-colores-pintando-pintura-aerosol-color-purpura_123827-23438.jpg?size=626&ext=jpg)] bg-center bg-cover  bg-no-repeat"
+          [src]= "item.product.image"
           alt=""
           class="size-16 rounded object-cover"
         />
@@ -20,73 +21,37 @@
           <h3 class="text-sm text-gray-900">Basic</h3>
           <dl class="mt-0.5 space-y-px text-[10px] text-gray-600">
             <div>
-              <dt class="inline">Size:</dt>
-              <dd class="inline">XXS</dd>
+              <dt class="inline">{{item.product.brand?.description}}</dt>
+              <dd class="inline">{{item.product.model?.model}}</dd>
             </div>
             <div>
-              <dt class="inline">Color:</dt>
-              <dd class="inline">White</dd>
+              <dt class="inline">{{item.product.price}}</dt>
             </div>
+            <div>
+              <dt class="inline">{{item.quantity}}</dt>
+            </div>
+            
           </dl>
         </div>
       </li>
-      <li class="flex items-center gap-4">
-        <img
-          src="https://img.freepik.com/foto-gratis/zapatilla-deporte-colores-pintando-pintura-aerosol-color-purpura_123827-23438.jpg?size=626&ext=jpg)] bg-center bg-cover  bg-no-repeat"
-          alt=""
-          class="size-16 rounded object-cover"
-        />
-        <div>
-          <h3 class="text-sm text-gray-900">Basic </h3>
-          <dl class="mt-0.5 space-y-px text-[10px] text-gray-600">
-            <div>
-              <dt class="inline">Size:</dt>
-              <dd class="inline">XXS</dd>
-            </div>
-            <div>
-              <dt class="inline">Color:</dt>
-              <dd class="inline">White</dd>
-            </div>
-          </dl>
-        </div>
-      </li>
-      <li class="flex items-center gap-4">
-        <img
-          src="https://img.freepik.com/foto-gratis/zapatilla-deporte-colores-pintando-pintura-aerosol-color-purpura_123827-23438.jpg?size=626&ext=jpg)] bg-center bg-cover  bg-no-repeat"
-          alt=""
-          class="size-16 rounded object-cover"
-        />
-        <div>
-          <h3 class="text-sm text-gray-900">Basic </h3>
-          <dl class="mt-0.5 space-y-px text-[10px] text-gray-600">
-            <div>
-              <dt class="inline">S</dt>
-              <dd class="inline">X</dd>
-            </div>
-            <div>
-              <dt class="inline">Color:</dt>
-              <dd class="inline">White</dd>
-            </div>
-          </dl>
-        </div>
-      </li>
-
+    }
+     <p>Total: ${{total}}</p>
     </ul>
     <div class="space-y-4 text-center">
       <a
-        href="#"
-        class="block rounded border bg-black border-gray-600 px-5 py-3 text-sm transition hover:bg-red-700 focus:outline-none focus:ring focus:ring-yellow-400 font-medium uppercase tracking-wide text-white"
+        routerLink="/cart"
+        class="block rounded border bg-black border-gray-600 px-5 py-3 text-sm transition hover:bg-red-700 focus:outline-none focus:ring focus:ring-yellow-400 font-medium tracking-wide text-white"
       >
         View my cart (2)
       </a>
       <a
-        href="#"
-        class="block rounded border bg-black border-gray-600 px-5 py-3 text-sm transition hover:bg-red-700 focus:outline-none focus:ring focus:ring-yellow-400 font-medium uppercase tracking-wide text-white"
+        routerLink="/cart"
+        class="block rounded border bg-black border-gray-600 px-5 py-3 text-sm transition hover:bg-red-700 focus:outline-none focus:ring focus:ring-yellow-400 font-medium  tracking-wide text-white "
       >
         Checkout
       </a>
       <a
-        href="#"
+        routerLink="/home"
         class="inline-block text-sm text-gray-500 underline underline-offset-4 transition hover:text-gray-600"
       >
         Continue shopping
