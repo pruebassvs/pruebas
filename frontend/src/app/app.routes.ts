@@ -6,12 +6,17 @@ import { NotFoundComponent } from './components/component/not-found/not-found.co
 import { ProductListComponent } from './components/pages/product-list/product-list.component';
 import { ProductDetailComponent } from './components/pages/product-detail/product-detail.component';
 import { CartDetailComponent } from './components/pages/cart-detail/cart-detail.component';
+import { CustomerDashboardComponent } from './components/pages/customer-dashboard/customer-dashboard.component';
+import { PurchaseHistoryComponent } from './components/component/purchase-history/purchase-history.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     {path:"home", component:LandingPageComponent},
     {path:"login", component:LoginPageComponent},
     {path:"register", component: RegisterPageComponent},
+    {path:"user", component: CustomerDashboardComponent, children: [
+        { path: 'purchase-history', component: PurchaseHistoryComponent },
+      ]},
     {path:"products", component: ProductListComponent},
     {path:"cart", component: CartDetailComponent},
     { path: 'products/:id', component: ProductDetailComponent },

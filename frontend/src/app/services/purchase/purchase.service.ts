@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { PurchaseConfirmationResponse, PurchaseDetail } from '../../types/types';
+import { PurchaseConfirmationResponse, Purchase } from '../../types/types';
 import { ENDPOINT } from '../../utils/utils';
 import { tap } from 'rxjs';
 import { CartService } from '../cart/cart.service';
@@ -28,8 +28,8 @@ export class PurchaseService {
     );
     }
 
-    public getPurchases(): Observable<PurchaseDetail[]> {
-      return this.http.get<PurchaseDetail[]>(ENDPOINT + 'purchase/user_purchases/')
+    public getPurchases(): Observable<Purchase[]> {
+      return this.http.get<Purchase[]>(ENDPOINT + 'purchase/user_purchases/')
         .pipe(
           catchError((error) => {
             console.error('Error occurred while fetching purchases:', error);
