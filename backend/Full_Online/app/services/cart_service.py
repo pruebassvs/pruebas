@@ -33,22 +33,28 @@ class CartService:
         )
 
         if not created:
-            cart_item.quantity += quantity
-            cart_item.save()
+       
+            new_quantity = cart_item.quantity + quantity
+            if product.stock >= new_quantity:
+                cart_item.quantity = new_quantity
+                cart_item.save()
+            else:
+                raise ValueError(f"Insufficient stock to increase quantity of {product.model}")
+        else:
+            new_quantity = quantity
+
         
         
     @staticmethod
     def remove_item_from_cart(item_id):
         item = get_object_or_404(CartDetail, id=item_id)
         product = item.product
-        if  item.quantity > 1:
+
+        if item.quantity > 1:
             item.quantity -= 1
             item.save()
-            product.stock += 1
-            product.save()
-           
         else:
-            product.stock += 1 
+
+            product.stock += item.quantity  
             product.save()
             item.delete()
-      

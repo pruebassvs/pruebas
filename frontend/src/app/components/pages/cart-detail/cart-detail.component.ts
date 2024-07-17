@@ -2,19 +2,26 @@ import { Component, OnInit } from '@angular/core';
 import { CartItemComponent } from '../cart-item/cart-item.component';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../../services/cart/cart.service';
-import { Cart, RemoveItemRequest } from '../../../types/types';
+import { PurchaseService } from '../../../services/purchase/purchase.service';
+import { Cart, PurchaseConfirmationResponse} from '../../../types/types';
+import { HttpErrorResponse } from '@angular/common/http';
+import { PurchaseComponent } from '../../component/purchase/purchase.component';
 
 @Component({
   selector: 'app-cart-detail',
   standalone: true,
-  imports: [CartItemComponent, RouterLink],
+  imports: [CartItemComponent, RouterLink, PurchaseComponent],
   templateUrl: './cart-detail.component.html',
   styleUrl: './cart-detail.component.css'
 })
 export class CartDetailComponent implements OnInit {
    cart:Cart= {} as Cart 
    total:number=0
-  constructor(private cartService:CartService) {}
+   purchase: PurchaseConfirmationResponse = {} as PurchaseConfirmationResponse;
+   purchaseConfirmed:boolean=false
+   confirmedTotal:number=0
+
+  constructor(private cartService:CartService, private PurchaseService:PurchaseService) {}
 
   ngOnInit(): void {
     this.cartService.cartSubject$.subscribe({
@@ -49,4 +56,28 @@ export class CartDetailComponent implements OnInit {
     }
   }
   
+  confirmPurchase() {
+    const totalconf= this.total 
+    this.PurchaseService.confirmPurchase().subscribe({
+      next: (response) => {
+        console.log('Compra realizada:', response);
+        alert(
+          `Compra realizada `
+        );
+        this.purchase = response;
+        this.purchaseConfirmed = true;
+        this.confirmedTotal=totalconf
+      },
+      error: (error: HttpErrorResponse) => {
+        if (error.status === 400 && error.error && error.error.error) {
+          alert(error.error.error );
+        } else {
+          console.error('Error processing the purchase:', error);
+          alert(
+             'An error occurred while processing the purchase, please try again.'
+          );
+        }
+      },
+    });
+  }
 }

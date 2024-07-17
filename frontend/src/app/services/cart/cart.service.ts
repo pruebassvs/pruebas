@@ -68,15 +68,4 @@ export class CartService {
     );
   }
 
-  public confirmPurchase(): Observable<PurchaseConfirmationResponse> {
-    return this.http.post<PurchaseConfirmationResponse>(ENDPOINT + 'purchase/confirm_purchase/', {}).pipe(
-      tap(() => {
-        this.getCart().subscribe();
-      }),
-      catchError((error) => {
-        console.error(`Error occurred while confirming purchase:`, error);
-        throw error;
-      })
-    );
-  }
 }
