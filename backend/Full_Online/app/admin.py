@@ -72,12 +72,12 @@ class DeliveryStatusTypeAdmin(admin.ModelAdmin):
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'email', 'adress')}),
+        ('Personal info', {'fields': ('email', 'adress')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+        
     )
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'adress')
-    search_fields = ('username', 'email', 'first_name', 'last_name', 'adress')
+    list_display = ('username', 'email', 'is_staff', 'adress')
+    search_fields = ('username', 'email', 'adress')
     
 @admin.register(DeliveryHistory)
 class DeliveryAdmin(admin.ModelAdmin):

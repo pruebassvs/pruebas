@@ -31,6 +31,11 @@ class UserSerializer(serializers.ModelSerializer):
         )
         return user
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['identification_number', 'phone', 'adress','password'] 
+        
 class ShoeModelTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShoeModelType

@@ -17,7 +17,7 @@ from .services.cart_service import CartService
 from .services.stripe_service import StripeService
 from .services.purchase_service import PurchaseService
 from .services.delivery_service import DeliveryService
-from .serializers import UserSerializer, ProductSerializer,DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer
+from .serializers import UserSerializer, ProductSerializer, UserUpdateSerializer, DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer
 from .models import  Product, Cart,CartDetail, Purchase, DeliveryStatusType, Delivery
 from knox.settings import knox_settings
 from datetime import datetime, timezone
@@ -92,6 +92,34 @@ class RegisterView(APIView):
                 {"error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
+            
+class UserDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            user = request.user 
+            serializer = UserSerializer(user) 
+            return Response(serializer.data)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, *args, **kwargs):
+        try:
+            user = request.user
+            serializer = UserUpdateSerializer(user, data=request.data, partial=True)
+        
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ProductViewSet(viewsets.ModelViewSet):
    
@@ -100,16 +128,19 @@ class ProductViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'])
     def get_random_product_excluding_id(self, request):
-        current_product_id = request.query_params.get('current_product_id')
-        queryset = self.get_queryset().exclude(id=current_product_id)
-        random_product = random.choice(queryset) if queryset.exists() else None
+        try:
+            current_product_id = request.query_params.get('current_product_id')
+            queryset = self.get_queryset().exclude(id=current_product_id)
+            random_product = random.choice(queryset) if queryset.exists() else None
         
-        if random_product:
-            serializer = self.get_serializer(random_product)
-            return Response(serializer.data)
-        else:
-            return Response({'error': 'No products available excluding the current one.'}, status=404)
-
+            if random_product:
+                serializer = self.get_serializer(random_product)
+                return Response(serializer.data)
+            else:
+                return Response({'error': 'No products available excluding the current one.'}, status=404)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
 class CartViewSet(viewsets.ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer

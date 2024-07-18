@@ -8,6 +8,7 @@ import { ProductDetailComponent } from './components/pages/product-detail/produc
 import { CartDetailComponent } from './components/pages/cart-detail/cart-detail.component';
 import { CustomerDashboardComponent } from './components/pages/customer-dashboard/customer-dashboard.component';
 import { PurchaseHistoryComponent } from './components/component/purchase-history/purchase-history.component';
+import { UserUpdateComponent } from './components/component/user-update/user-update.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -16,6 +17,7 @@ export const routes: Routes = [
     {path:"register", component: RegisterPageComponent},
     {path:"user", component: CustomerDashboardComponent, children: [
         { path: 'purchase-history', component: PurchaseHistoryComponent },
+        { path: 'user-update', component: UserUpdateComponent},
       ]},
     {path:"products", component: ProductListComponent},
     {path:"cart", component: CartDetailComponent},
