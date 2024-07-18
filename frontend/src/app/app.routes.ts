@@ -9,6 +9,10 @@ import { CartDetailComponent } from './components/pages/cart-detail/cart-detail.
 import { CustomerDashboardComponent } from './components/pages/customer-dashboard/customer-dashboard.component';
 import { PurchaseHistoryComponent } from './components/component/purchase-history/purchase-history.component';
 import { UserUpdateComponent } from './components/component/user-update/user-update.component';
+import { AdminDashboardComponent } from './components/pages/admin-dashboard/admin-dashboard.component';
+import { DeliveriesComponent } from './components/component/deliveries/deliveries.component';
+import { StockAdminComponent } from './components/component/stock-admin/stock-admin.component';
+import { NewProductComponent } from './components/component/new-product/new-product.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -18,6 +22,11 @@ export const routes: Routes = [
     {path:"user", component: CustomerDashboardComponent, children: [
         { path: 'purchase-history', component: PurchaseHistoryComponent },
         { path: 'user-update', component: UserUpdateComponent},
+      ]},
+      {path:"admin", component: AdminDashboardComponent, children: [
+        { path: 'deliveries', component: DeliveriesComponent },
+        { path: 'stock-admin', component: StockAdminComponent},
+        { path: 'new-product', component: NewProductComponent},
       ]},
     {path:"products", component: ProductListComponent},
     {path:"cart", component: CartDetailComponent},

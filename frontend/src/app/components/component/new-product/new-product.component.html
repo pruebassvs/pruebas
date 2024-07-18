@@ -1,0 +1,35 @@
+<section>
+    <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+      <header>
+        <h2 class="text-xl font-bold text-gray-900 sm:text-3xl">Add Product</h2>
+      </header>
+  
+      <form (ngSubmit)="addProduct()" class="mt-8 grid grid-cols-6 gap-6">
+        <div class="col-span-6 sm:col-span-3">
+          <label for="productName" class="block text-sm font-medium text-gray-700">Product Name</label>
+          <input type="text" id="productName" [(ngModel)]="newProduct.stock" name="productName"
+                 class="border border-gray-300 rounded-md px-3 py-2 w-full text-sm text-gray-700 shadow-sm"/>
+        </div>
+  
+        <div class="col-span-6 sm:col-span-3">
+          <label for="productImage" class="block text-sm font-medium text-gray-700">Product Image URL</label>
+          <input type="text" id="productImage" [(ngModel)]="newProduct.image" name="productImage"
+                 class="border border-gray-300 rounded-md px-3 py-2 w-full text-sm text-gray-700 shadow-sm"/>
+        </div>
+  
+        <div class="col-span-6">
+          <label for="productDescription" class="block text-sm font-medium text-gray-700">Product Description</label>
+          <textarea id="productDescription" [(ngModel)]="newProduct.stock" name="productDescription"
+                    class="border border-gray-300 rounded-md px-3 py-2 w-full text-sm text-gray-700 shadow-sm"></textarea>
+        </div>
+  
+        <div class="col-span-6 sm:flex sm:items-center sm:gap-4">
+          <button type="submit"
+                  class="block rounded border bg-black border-gray-600 px-5 py-3 text-sm transition hover:bg-red-700 focus:outline-none focus:ring focus:ring-yellow-400 font-medium tracking-wide text-white">Add
+            Product
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+  

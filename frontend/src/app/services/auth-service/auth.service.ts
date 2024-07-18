@@ -14,6 +14,7 @@ export class AuthService {
   public isLogged = new BehaviorSubject<boolean>(this.checkIsLogged());
   isLogged$=this.isLogged.asObservable()
   public isAdmin = new BehaviorSubject<boolean>(this.checkIsAdmin());
+  isAdmin$= this.isAdmin.asObservable()
   public userEmail = new BehaviorSubject<string>(
     this.cookies.get('userEmail') || ''
   );

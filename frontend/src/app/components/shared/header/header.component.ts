@@ -17,12 +17,16 @@ export class HeaderComponent implements OnInit{
   isBannerVisible = true;
   isLogged=false;
   isCartOpen = false;
+  isAdmin = false
 
   constructor(private authService:AuthService){}
 
   ngOnInit(): void {
       this.authService.isLogged$.subscribe(
         value=>{this.isLogged=value}
+      )
+      this.authService.isAdmin$.subscribe(
+        value=>{this.isAdmin=value}
       )
   }
   closeBanner() {
