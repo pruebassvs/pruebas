@@ -5,6 +5,7 @@ import { ProductService } from '../../../services/product/product.service';
 import { CartService } from '../../../services/cart/cart.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../services/auth-service/auth.service';
 
 @Component({
   selector: 'app-product-list',
@@ -16,8 +17,10 @@ import { FormsModule } from '@angular/forms';
 export class ProductListComponent implements OnInit {
 products:Product[]=[]
 quantity = 1;
+isLogged=false;
+isAdmin = false
 
-constructor(private productService: ProductService, private cartService:CartService) {
+constructor(private productService: ProductService, private cartService:CartService, private authService:AuthService) {
 
 }
 ngOnInit(): void {
@@ -26,6 +29,12 @@ ngOnInit(): void {
     error: (error) => console.error(error),
     
   });
+  this.authService.isLogged$.subscribe(
+    value=>{this.isLogged=value}
+  )
+  this.authService.isAdmin$.subscribe(
+    value=>{this.isAdmin=value}
+  ) 
 }
 
 addItemCart(product_id?: number, quantity?:number): void {

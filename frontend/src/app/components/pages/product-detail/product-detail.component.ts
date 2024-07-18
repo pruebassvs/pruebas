@@ -7,6 +7,7 @@ import { RouterLink } from '@angular/router';
 import { CartService } from '../../../services/cart/cart.service';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../../services/auth-service/auth.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -20,11 +21,20 @@ export class ProductDetailComponent implements OnInit{
 product : Product = {} as Product
 other: Product = {} as Product
 quantity:number=1
-constructor(private productService: ProductService, private route: ActivatedRoute,private cartService: CartService){}
+isLogged=false;
+isAdmin = false
+
+constructor(private productService: ProductService, private route: ActivatedRoute,private cartService: CartService, private authService:AuthService){}
 
 ngOnInit(): void {
   this.getProductId();
-} 
+  this.authService.isLogged$.subscribe(
+    value=>{this.isLogged=value}
+  )
+  this.authService.isAdmin$.subscribe(
+    value=>{this.isAdmin=value}
+  ) 
+}
 
 getProductId() {
   const productId = this.route.snapshot.paramMap.get('id');

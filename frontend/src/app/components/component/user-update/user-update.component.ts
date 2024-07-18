@@ -54,10 +54,6 @@ export class UserUpdateComponent implements OnInit {
     );
   }
  
- 
-    
-     
-
   ngOnInit(): void {
     this.userService.getUser().subscribe({
       next: (user:User) => {
@@ -92,7 +88,6 @@ export class UserUpdateComponent implements OnInit {
       });
     }
   }
-
 
   get identification_number() {
     return this.updateForm.get('identification_number');
