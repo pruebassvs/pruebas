@@ -4,12 +4,12 @@ import {
   FormBuilder,
   FormGroup,
   Validators,
-} from '@angular/forms';
+} from '@angular/forms'; 
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../../services/auth-service/auth.service';
 import { UserLogin } from '../../../types/types';
 import Swal from 'sweetalert2';
-import { using } from 'rxjs';
+
 
 @Component({
   selector: 'app-login-page',
@@ -87,7 +87,6 @@ export class LoginPageComponent {
               
             });
             console.error(error);
-            
           },
         });
       } else {

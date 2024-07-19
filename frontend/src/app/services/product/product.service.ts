@@ -6,6 +6,7 @@ import { ENDPOINT } from '../../utils/utils';
 import {  NewProduct, Product } from '../../types/types';
 import { Observable} from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { ShoeModelType, BrandType, SizeType, ColorType } from '../../types/types';
 
 
 @Injectable({
@@ -15,6 +16,40 @@ export class ProductService{
   
   
   constructor(private http: HttpClient) {}
+
+  getShoeModels(): Observable<ShoeModelType[]> {
+    return this.http.get<ShoeModelType[]>(`${ENDPOINT}model/`).pipe(
+      catchError((error) => {
+        console.error(`Error occurred while fetching models:`, error);
+          throw error;
+      })
+    );
+  }
+  getBrands(): Observable<BrandType[]> {
+    return this.http.get<BrandType[]>(`${ENDPOINT}brand/`).pipe(
+      catchError((error) => {
+        console.error(`Error occurred while fetching brands:`, error);
+          throw error;
+      })
+    );
+  }
+  getSizes(): Observable<SizeType[]> {
+    return this.http.get<SizeType[]>(`${ENDPOINT}size/`).pipe(
+      catchError((error) => {
+        console.error(`Error occurred while fetching sizes:`, error);
+          throw error;
+      })
+    );
+  }
+
+  getColors(): Observable<ColorType[]> {
+    return this.http.get<ColorType[]>(`${ENDPOINT}color/`).pipe(
+      catchError((error) => {
+        console.error(`Error occurred while fetching colors:`, error);
+          throw error;
+      })
+    );
+  }
 
   public getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(`${ENDPOINT}products/`).pipe(
@@ -50,8 +85,8 @@ export class ProductService{
       })
     );
   }
-  public addProduct(product: NewProduct): Observable<NewProduct> {
-    return this.http.post<NewProduct>(`${ENDPOINT}products/`, product)
+  public addProduct(product: NewProduct): Observable<Product> {
+    return this.http.post<Product>(`${ENDPOINT}products/`, product)
       .pipe(catchError((error) => {
         console.error('Error occurred while adding product:', error);
         throw error;

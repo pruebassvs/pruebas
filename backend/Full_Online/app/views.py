@@ -17,8 +17,8 @@ from .services.cart_service import CartService
 from .services.stripe_service import StripeService
 from .services.purchase_service import PurchaseService
 from .services.delivery_service import DeliveryService
-from .serializers import UserSerializer, ProductSerializer, UserUpdateSerializer, DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer
-from .models import  Product, Cart,CartDetail, Purchase, DeliveryStatusType, Delivery
+from .serializers import UserSerializer, ProductSerializer, UserUpdateSerializer, DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer, ShoeModelTypeSerializer,BrandTypeSerializer,SizeTypeSerializer, ColorTypeSerializer
+from .models import  Product, Cart,CartDetail, Purchase, DeliveryStatusType, Delivery, ShoeModelType, BrandType,SizeType,ColorType
 from knox.settings import knox_settings
 from datetime import datetime, timezone
 import random
@@ -317,3 +317,19 @@ class ChangeDeliveryStatusAPIView(APIView):
                 }, status=status.HTTP_200_OK)
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class ShoeModelTypeViewSet(viewsets.ModelViewSet):
+    queryset = ShoeModelType.objects.all()
+    serializer_class = ShoeModelTypeSerializer
+
+class BrandTypeViewSet(viewsets.ModelViewSet):
+    queryset = BrandType.objects.all()
+    serializer_class = BrandTypeSerializer
+
+class SizeTypeViewSet(viewsets.ModelViewSet):
+    queryset = SizeType.objects.all()
+    serializer_class = SizeTypeSerializer
+
+class ColorTypeViewSet(viewsets.ModelViewSet):
+    queryset = ColorType.objects.all()
+    serializer_class = ColorTypeSerializer

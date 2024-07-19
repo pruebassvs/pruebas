@@ -47,7 +47,7 @@ export interface Product {
     items: Item[];
     date: string; 
     user: number
-} 
+}  
 
   export interface Item {
     id: number;
