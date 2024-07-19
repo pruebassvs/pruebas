@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'knox',
     'app',
-    'corsheaders'
+    'corsheaders',
+    'django_filters',
 ]
 
 REST_KNOX = {
@@ -53,6 +54,7 @@ REST_KNOX = {
 }
 
 REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "knox.auth.TokenAuthentication",
     ],

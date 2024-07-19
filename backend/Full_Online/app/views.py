@@ -22,6 +22,8 @@ from .models import  Product, Cart,CartDetail, Purchase, DeliveryStatusType, Del
 from knox.settings import knox_settings
 from datetime import datetime, timezone
 import random
+from django_filters.rest_framework import DjangoFilterBackend
+from .utils.filters import ProductFilter
 
 
 
@@ -125,6 +127,8 @@ class ProductViewSet(viewsets.ModelViewSet):
    
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProductFilter
     
     @action(detail=False, methods=['get'])
     def get_random_product_excluding_id(self, request):
