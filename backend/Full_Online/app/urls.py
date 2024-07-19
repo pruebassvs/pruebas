@@ -20,5 +20,5 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('user/', UserDetailView.as_view(), name='user-update'),
     path('user/update/', UserUpdateView.as_view(), name='user-update'),
-    path('delivery_status/', ChangeDeliveryStatusAPIView.as_view(), name='delivery_status'),
+    path('deliveries/', ChangeDeliveryStatusAPIView.as_view(), name='change delivery_status'),
 ]

@@ -18,7 +18,7 @@ from .services.stripe_service import StripeService
 from .services.purchase_service import PurchaseService
 from .services.delivery_service import DeliveryService
 from .serializers import UserSerializer, ProductSerializer, UserUpdateSerializer, DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer, ShoeModelTypeSerializer,BrandTypeSerializer,SizeTypeSerializer, ColorTypeSerializer
-from .models import  Product, Cart,CartDetail, Purchase, DeliveryStatusType, Delivery, ShoeModelType, BrandType,SizeType,ColorType
+from .models import  Product, Cart,CartDetail, Purchase, DeliveryStatusType, Delivery,DeliveryHistory, ShoeModelType, BrandType,SizeType,ColorType
 from knox.settings import knox_settings
 from datetime import datetime, timezone
 import random
@@ -311,10 +311,9 @@ class ChangeDeliveryStatusAPIView(APIView):
                 status=status.HTTP_404_NOT_FOUND)
             
             deliveries_all = DeliverySerializer(deliveries, many=True)
-            return Response({
-                'message': 'Delivery status ',
-                'delivery': deliveries_all.data,
-                }, status=status.HTTP_200_OK)
+            return Response(
+                 deliveries_all.data,
+               )
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 

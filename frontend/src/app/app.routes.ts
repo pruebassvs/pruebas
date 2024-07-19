@@ -14,6 +14,7 @@ import { DeliveriesComponent } from './components/component/deliveries/deliverie
 import { StockAdminComponent } from './components/component/stock-admin/stock-admin.component';
 import { NewProductComponent } from './components/component/new-product/new-product.component';
 
+
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     {path:"home", component:LandingPageComponent},
