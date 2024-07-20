@@ -5,6 +5,7 @@ import { ProductService } from '../../../services/product/product.service';
 import { CartService } from '../../../services/cart/cart.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../services/auth-service/auth.service';
 
 @Component({
@@ -44,11 +45,14 @@ addItemCart(product_id?: number, quantity?:number): void {
         alert('Item Added.');
         console.log(res, product_id, this.quantity);
       },
-      error: (error) => {
-        console.error(error);
-      }
+      error: (error: HttpErrorResponse) => {
+        if (error) {
+          alert(error.error.error );
+        } else {
+          console.error('Error Adding product:', error);
+        }
+      },
     });
   }
 }
-
 }

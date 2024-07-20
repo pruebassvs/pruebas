@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from django.core.validators import MinLengthValidator, EmailValidator
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -32,9 +33,33 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 class UserUpdateSerializer(serializers.ModelSerializer):
+    identification_number = serializers.CharField(
+        min_length=6,
+        validators=[MinLengthValidator(6)]
+    )
+    phone= serializers.CharField(
+        min_length=6,
+        validators=[MinLengthValidator(6)]
+    )
+    adress = serializers.CharField(
+        min_length=6,
+        validators=[MinLengthValidator(6)]
+    )
+  
     class Meta:
         model = CustomUser
-        fields = ['identification_number', 'phone', 'adress','password'] 
+        fields = ['identification_number', 'phone', 'adress'] 
+        
+    def update(self, instance, validated_data):
+       
+        allowed_fields = ['identification_number', 'phone', 'adress']
+
+        for field in allowed_fields:
+            if field in validated_data:
+                setattr(instance, field, validated_data[field])
+
+        instance.save()
+        return instance
         
 class ShoeModelTypeSerializer(serializers.ModelSerializer):
     class Meta:

@@ -15,7 +15,7 @@ export class UserService {
   getUser():Observable<User>{
     return this.http.get<User>(ENDPOINT + 'user/').pipe(
       catchError((error) => {
-        console.error('Error occurred while fetching purchases:', error);
+        console.error('Error occurred while fetching user:', error);
         throw error;
       })
     );
@@ -24,7 +24,7 @@ export class UserService {
   updateUser(data: Partial<User>): Observable<User> {
     return this.http.patch<User>(ENDPOINT + 'user/update/', data).pipe(
       catchError((error) => {
-        console.error('Error occurred while fetching purchases:', error);
+        console.error('Error occurred while updating user:', error);
         throw error;
       })
     );
