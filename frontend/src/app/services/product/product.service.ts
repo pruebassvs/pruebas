@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-
 import { HttpClient} from '@angular/common/http';
 import { ENDPOINT } from '../../utils/utils';
 import {  NewProduct, Product } from '../../types/types';
@@ -17,42 +16,23 @@ export class ProductService{
   
   constructor(private http: HttpClient) {}
 
-  getShoeModels(): Observable<ShoeModelType[]> {
-    return this.http.get<ShoeModelType[]>(`${ENDPOINT}model/`).pipe(
-      catchError((error) => {
-        console.error(`Error occurred while fetching models:`, error);
-          throw error;
-      })
-    );
-  }
-  getBrands(): Observable<BrandType[]> {
-    return this.http.get<BrandType[]>(`${ENDPOINT}brand/`).pipe(
-      catchError((error) => {
-        console.error(`Error occurred while fetching brands:`, error);
-          throw error;
-      })
-    );
-  }
-  getSizes(): Observable<SizeType[]> {
-    return this.http.get<SizeType[]>(`${ENDPOINT}size/`).pipe(
-      catchError((error) => {
-        console.error(`Error occurred while fetching sizes:`, error);
-          throw error;
-      })
-    );
-  }
 
-  getColors(): Observable<ColorType[]> {
-    return this.http.get<ColorType[]>(`${ENDPOINT}color/`).pipe(
-      catchError((error) => {
-        console.error(`Error occurred while fetching colors:`, error);
-          throw error;
-      })
-    );
-  }
+  public getProducts(filters: any = {}): Observable<Product[]> {
+    let params = new HttpParams();
 
-  public getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${ENDPOINT}products/`).pipe(
+    if (filters.brand) {
+      params = params.set('brand', filters.brand);
+    }
+    if (filters.min_price) {
+      params = params.set('min_price', filters.min_price);
+    }
+    if (filters.max_price) {
+      params = params.set('max_price', filters.max_price);
+    }
+    if (filters.has_stock !== undefined) {
+      params = params.set('has_stock', filters.has_stock);
+    }
+    return this.http.get<Product[]>(`${ENDPOINT}products/`, { params }).pipe(
       catchError((error) => {
         console.error('Error occurred while fetching products:', error);
         throw error;
@@ -90,6 +70,39 @@ export class ProductService{
       .pipe(catchError((error) => {
         console.error('Error occurred while adding product:', error);
         throw error;
+      })
+    );
+  }
+  getShoeModels(): Observable<ShoeModelType[]> {
+    return this.http.get<ShoeModelType[]>(`${ENDPOINT}model/`).pipe(
+      catchError((error) => {
+        console.error(`Error occurred while fetching models:`, error);
+          throw error;
+      })
+    );
+  }
+  getBrands(): Observable<BrandType[]> {
+    return this.http.get<BrandType[]>(`${ENDPOINT}brand/`).pipe(
+      catchError((error) => {
+        console.error(`Error occurred while fetching brands:`, error);
+          throw error;
+      })
+    );
+  }
+  getSizes(): Observable<SizeType[]> {
+    return this.http.get<SizeType[]>(`${ENDPOINT}size/`).pipe(
+      catchError((error) => {
+        console.error(`Error occurred while fetching sizes:`, error);
+          throw error;
+      })
+    );
+  }
+
+  getColors(): Observable<ColorType[]> {
+    return this.http.get<ColorType[]>(`${ENDPOINT}color/`).pipe(
+      catchError((error) => {
+        console.error(`Error occurred while fetching colors:`, error);
+          throw error;
       })
     );
   }

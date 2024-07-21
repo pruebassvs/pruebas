@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../services/auth-service/auth.service';
+import { BrandType } from '../../../types/types';
 
 @Component({
   selector: 'app-product-list',
@@ -17,27 +18,80 @@ import { AuthService } from '../../../services/auth-service/auth.service';
 })
 export class ProductListComponent implements OnInit {
 products:Product[]=[]
+brands: BrandType[] = [];
 quantity = 1;
 isLogged=false;
 isAdmin = false
+filters = {
+  brand: '',
+  min_price: '',
+  max_price: '',
+  has_stock: true
+};
+isFiltersVisible = false;
+
 
 constructor(private productService: ProductService, private cartService:CartService, private authService:AuthService) {
 
 }
 ngOnInit(): void {
+ 
+  this.loadProducts()
+  this.loadBrands()
+  
+  this.authService.isLogged$.subscribe({
+    next: (value) => (this.isLogged = value),
+    error: (error) => console.error(error),
+    
+  })
+  this.authService.isAdmin$.subscribe(
+    {
+      next: (value) => (this.isAdmin = value),
+      error: (error) => console.error(error),
+    }
+  )
+  
+}
+loadProducts(){ 
+  this.productService.getProducts().subscribe({
+  next: (prods) => (this.products = prods),
+  error: (error) => console.error(error),
+  
+});
+}
+loadBrands(){
+  this.productService.getBrands().subscribe(
+    {
+      next: (value) => (this.brands = value),
+      error: (error) => console.error(error),
+    }
+  )
+}
+toggleFilters() {
+  this.isFiltersVisible = !this.isFiltersVisible;
+}
+
+ApplyFilters():void {
+  this.productService.getProducts(this.filters).subscribe(
+    {
+      next: (prods) => (this.products = prods),
+      error: (error) => console.error(error),
+    }
+  );
+}
+resetFilters():void {
+  this.filters = {
+    brand: '',
+    min_price: '',
+    max_price: '',
+    has_stock: true
+  };
   this.productService.getProducts().subscribe({
     next: (prods) => (this.products = prods),
     error: (error) => console.error(error),
     
   });
-  this.authService.isLogged$.subscribe(
-    value=>{this.isLogged=value}
-  )
-  this.authService.isAdmin$.subscribe(
-    value=>{this.isAdmin=value}
-  ) 
 }
-
 addItemCart(product_id?: number, quantity?:number): void {
   if (product_id !== undefined) {
     this.cartService.addItem(product_id, this.quantity).subscribe({
