@@ -16,9 +16,9 @@ export class PurchaseService {
 
   constructor(private cartService:CartService, private http: HttpClient, private loaderService: LoaderService) { }
 
-  public confirmPurchase(): Observable<PurchaseConfirmationResponse> { 
+  public confirmPurchase(paymentMethodId: string): Observable<PurchaseConfirmationResponse> { 
     this.loaderService.show()
-    return this.http.post<PurchaseConfirmationResponse>(ENDPOINT + 'purchase/confirm_purchase/', {}).pipe(
+    return this.http.post<PurchaseConfirmationResponse>(ENDPOINT + 'purchase/confirm_purchase/', { payment_method: paymentMethodId }).pipe(
       tap(() => {
           this.cartService.getCart().subscribe(); 
         }

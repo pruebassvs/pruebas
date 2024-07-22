@@ -11,6 +11,17 @@ router.register(r"model",ShoeModelTypeViewSet)
 router.register(r"brand",BrandTypeViewSet)
 router.register(r"color",ColorTypeViewSet)
 router.register(r"size",SizeTypeViewSet)
+purchase_list = PurchaseViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+
+purchase_detail = PurchaseViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
 
 urlpatterns = [
     path("", include(router.urls)),
@@ -21,4 +32,8 @@ urlpatterns = [
     path('user/', UserDetailView.as_view(), name='user-update'),
     path('user/update/', UserUpdateView.as_view(), name='user-update'),
     path('deliveries/', ChangeDeliveryStatusAPIView.as_view(), name='change delivery_status'),
+    path('purchase/', purchase_list, name='purchase-list'),
+    path('purchase/<int:pk>/', purchase_detail, name='purchase-detail'),
+    path('purchase/confirm_purchase/', PurchaseViewSet.as_view({'post': 'confirm_purchase'}), name='confirm-purchase'),
+    path('purchase/user_purchases/', PurchaseViewSet.as_view({'get': 'user_purchases'}), name='user-purchases'),
 ]
