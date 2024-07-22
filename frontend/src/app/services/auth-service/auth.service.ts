@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, catchError } from 'rxjs';
+import { Observable, tap, catchError, finalize } from 'rxjs';
 import { ENDPOINT } from '../../utils/utils';
 import { BehaviorSubject } from 'rxjs';
 import { NewUser,UserRegistrationResponse, LoginResponse, LogoutResponse, UserLogin } from '../../types/types';
 import Cookies from 'universal-cookie';
+import { LoaderService } from '../loader/loader.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,7 @@ export class AuthService {
     this.cookies.get('userEmail') || ''
   );
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private loaderService: LoaderService) {}
 
   public checkIsLogged():boolean {
     const token = this.cookies.get('token');
@@ -46,6 +47,7 @@ export class AuthService {
   }
 
   public login(user: UserLogin): Observable<LoginResponse> {
+    this.loaderService.show();
     return this.http.post<LoginResponse>(`${ENDPOINT}login/`, user).pipe(
       tap((response) => {
         const userEmail = response.user.email!;
@@ -57,20 +59,26 @@ export class AuthService {
       catchError((error) => {
         console.error('Login error:', error);
         throw error;
-      })
+      }),
+      finalize(() => this.loaderService.hide())
     );
   }
 
   public register(user: NewUser): Observable<UserRegistrationResponse> {
+    this.loaderService.show();
     return this.http.post<UserRegistrationResponse>(`${ENDPOINT}register/`, user).pipe(
+      
       catchError((error) => {
+        this.loaderService.hide()
         console.error('Registration error:', error);
         throw error;
-      })
+      }),
+      finalize(() => this.loaderService.hide())
     );
   }
 
   public logout(): Observable<LogoutResponse> {
+    this.loaderService.show();
 
     return this.http
       .post<LogoutResponse>(ENDPOINT + 'logout/', {})
@@ -86,7 +94,8 @@ export class AuthService {
         catchError((error) => {
           console.error('Logout error:', error);
           throw error;
-        })
+        }),
+        finalize(() => this.loaderService.hide())
       );
     }
   private createSession(userEmail:string, expiresIn:number, token:string, is_staff:boolean):void{

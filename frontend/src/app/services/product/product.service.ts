@@ -4,8 +4,9 @@ import { HttpClient} from '@angular/common/http';
 import { ENDPOINT } from '../../utils/utils';
 import {  NewProduct, Product } from '../../types/types';
 import { Observable} from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap, finalize } from 'rxjs/operators';
 import { ShoeModelType, BrandType, SizeType, ColorType } from '../../types/types';
+import { LoaderService } from '../loader/loader.service';
 
 
 @Injectable({
@@ -14,10 +15,11 @@ import { ShoeModelType, BrandType, SizeType, ColorType } from '../../types/types
 export class ProductService{
   
   
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private loaderService: LoaderService) {}
 
 
   public getProducts(filters: any = {}): Observable<Product[]> {
+    this.loaderService.show();
     let params = new HttpParams();
 
     if (filters.brand) {
@@ -35,17 +37,21 @@ export class ProductService{
     return this.http.get<Product[]>(`${ENDPOINT}products/`, { params }).pipe(
       catchError((error) => {
         console.error('Error occurred while fetching products:', error);
-        throw error;
-      }
-    ))
+        throw error
+      }),
+      finalize(() => this.loaderService.hide())
+    );
   }
 
+
   public getProductById(id: number): Observable<Product> {
+    this.loaderService.show()
     return this.http.get<Product>(`${ENDPOINT}products/${id}/`).pipe(
       catchError((error) => {
         console.error(`Error occurred while fetching product with ID ${id}:`, error);
           throw error;
-      })
+      }),
+      finalize(() => this.loaderService.hide())
     );
   }
   public getRandomProductExcluding(currentProductId: number): Observable<Product> {
@@ -58,19 +64,24 @@ export class ProductService{
     );
   }
   public patchProductStock(id: number, stock: number): Observable<Product> {
+    this.loaderService.show()
     return this.http.patch<Product>(`${ENDPOINT}products/${id}/`, { stock }).pipe(
       catchError((error) => {
         console.error('Error occurred while updating product stock:', error);
         throw error;
-      })
+      }),
+      finalize(() => this.loaderService.hide())
     );
   }
   public addProduct(product: NewProduct): Observable<Product> {
+    this.loaderService.show()
     return this.http.post<Product>(`${ENDPOINT}products/`, product)
-      .pipe(catchError((error) => {
+      .pipe(
+        catchError((error) => {
         console.error('Error occurred while adding product:', error);
         throw error;
-      })
+      }),
+      finalize(() => this.loaderService.hide())
     );
   }
   getShoeModels(): Observable<ShoeModelType[]> {
