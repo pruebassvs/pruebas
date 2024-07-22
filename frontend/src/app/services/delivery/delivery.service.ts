@@ -5,7 +5,7 @@ import { Delivery, DeliveryStatusResponse, UpdateDeliveryStatusRequest } from '.
 import { ENDPOINT } from '../../utils/utils';
 import { catchError } from 'rxjs';
 import { LoaderService } from '../loader/loader.service';
-import { tap } from 'rxjs';
+import { tap, finalize } from 'rxjs';
 
 
 @Injectable({
@@ -18,14 +18,11 @@ export class DeliveryService {
   getDeliveries(): Observable<Delivery[]> {
     this.loaderService.show();
     return this.http.get<Delivery[]>(`${ENDPOINT}deliveries/`).pipe(
-      tap({
-        next: () => this.loaderService.hide(),
-        error: () => this.loaderService.hide()
-      }),
       catchError((error) => {
         console.error('Error occurred while updating product stock:', error);
         throw error;
-      })
+      }),
+      finalize(() => this.loaderService.hide())
     );
   }
   
@@ -33,14 +30,11 @@ export class DeliveryService {
   updateDeliveryStatus(request: UpdateDeliveryStatusRequest): Observable<DeliveryStatusResponse> {
     this.loaderService.show();
     return this.http.patch<DeliveryStatusResponse>(`${ENDPOINT}deliveries/`, request).pipe(
-       tap({
-        next: () => this.loaderService.hide(),
-        error: () => this.loaderService.hide()
-      }),
       catchError((error) => {
         console.error('Error occurred while updating product stock:', error);
         throw error;
-      })
+      }),
+      finalize(() => this.loaderService.hide())
     );
   }
   }
