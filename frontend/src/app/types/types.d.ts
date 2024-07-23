@@ -138,6 +138,7 @@ export interface Product {
     details: PurchaseDetail[];
     delivery: Delivery;
     payment_intent: string;
+    payment_method: string
   }
 
   export type DeliveryStatus = 'P' | 'T' | 'C';
@@ -169,3 +170,9 @@ export interface Product {
     purchase_id: number;
     status_description: DeliveryStatus;
   }
+
+  export interface PaymentTypes {
+    id: number;
+    description: string;
+  }
+

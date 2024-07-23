@@ -17,8 +17,8 @@ from .services.cart_service import CartService
 from .services.stripe_service import StripeService
 from .services.purchase_service import PurchaseService
 from .services.delivery_service import DeliveryService
-from .serializers import UserSerializer, ProductSerializer, UserUpdateSerializer, DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer, ShoeModelTypeSerializer,BrandTypeSerializer,SizeTypeSerializer, ColorTypeSerializer
-from .models import  Product, Cart,CartDetail, Purchase, DeliveryStatusType, Delivery,DeliveryHistory, ShoeModelType, BrandType,SizeType,ColorType
+from .serializers import UserSerializer, ProductSerializer, UserUpdateSerializer,PaymentModeTypeSerializer, DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer, ShoeModelTypeSerializer,BrandTypeSerializer,SizeTypeSerializer, ColorTypeSerializer
+from .models import  Product, Cart,CartDetail, Purchase, PaymentModeType, DeliveryStatusType, Delivery,DeliveryHistory, ShoeModelType, BrandType,SizeType,ColorType
 from knox.settings import knox_settings
 from datetime import datetime, timezone
 import random
@@ -244,37 +244,76 @@ class PurchaseViewSet(viewsets.ModelViewSet):
                 {"error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
+            
     @action(detail=False, methods=["post"], permission_classes=[permissions.IsAuthenticated])
     def confirm_purchase(self, request):
+        user = request.user
+        payment_method_id = request.data.get('Payment_method_id')
+
+        if not payment_method_id:
+            return Response({'error': 'Payment method ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            user = request.user
-            cart = Cart.objects.get(user=user) 
+            cart = Cart.objects.get(user=user)
             total_amount = sum(item.product.price * item.quantity for item in cart.items.all())
-            
-            with transaction.atomic():
-                amount_in_cents = int(total_amount * 100) 
-                payment_method = 'pm_card_visa'
-                payment_intent = StripeService.create_payment_intent(amount= amount_in_cents)
-                StripeService.confirm_payment_intent(payment_intent['id'], payment_method)
-                purchase, purchase_details = PurchaseService.confirm_purchase(user, cart)
-                delivery= DeliveryService.create_delivery(purchase)
-        
-            
-            details_serializer = PurchaseDetailSerializer(purchase_details, many=True)
-            delivery_serializer = DeliverySerializer(delivery)
+            payment_method = PaymentModeType.objects.get(id=payment_method_id)
+        except Cart.DoesNotExist:
+            return Response({'error': 'Cart not found for the user'}, status=status.HTTP_404_NOT_FOUND)
+        except PaymentModeType.DoesNotExist:
+            return Response({'error': 'Invalid payment method ID'}, status=status.HTTP_400_BAD_REQUEST)
 
-            response_data = {
-                "message": "Purchase completed successfully",
-                "details": details_serializer.data,
-                "delivery": delivery_serializer.data,
-                "payment_intent": payment_intent['id']  ,
-            }
+        if payment_method.description == "Stripe":  # Assuming `description` is the field to check
+            try:
+                with transaction.atomic():
+                    amount_in_cents = int(total_amount * 100)
+                    payment_intent = StripeService.create_payment_intent(amount=amount_in_cents)
+                    payment_method = 'pm_card_visa' 
+                    StripeService.confirm_payment_intent(payment_intent['id'], payment_method)
 
-            return Response(response_data, status=status.HTTP_201_CREATED)
+                    purchase, purchase_details = PurchaseService.confirm_purchase(user, cart, payment_method_id)
+                    delivery = DeliveryService.create_delivery(purchase)
 
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+                    details_serializer = PurchaseDetailSerializer(purchase_details, many=True)
+                    delivery_serializer = DeliverySerializer(delivery)
+
+                    response_data = {
+                        "message": "Purchase completed successfully",
+                        "details": details_serializer.data,
+                        "delivery": delivery_serializer.data,
+                        "payment_intent": payment_intent['id'],
+                        "payment_method": payment_method
+                    }
+
+                    return Response(response_data, status=status.HTTP_201_CREATED)
+
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        elif payment_method.description == "Cash":
+            try:
+                with transaction.atomic():
+                    amount_in_cents = int(total_amount * 100)
+
+                    purchase, purchase_details = PurchaseService.confirm_purchase(user, cart, payment_method_id)
+                    delivery = DeliveryService.create_delivery(purchase)
+
+                    details_serializer = PurchaseDetailSerializer(purchase_details, many=True)
+                    delivery_serializer = DeliverySerializer(delivery)
+
+                    response_data = {
+                        "message": "Purchase completed successfully",
+                        "details": details_serializer.data,
+                        "delivery": delivery_serializer.data,
+                        "payment_intent": "cash",
+                        "payment_method": payment_method.description
+                    }
+
+                    return Response(response_data, status=status.HTTP_201_CREATED)
+
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'error': 'Unsupported payment method'}, status=status.HTTP_400_BAD_REQUEST)
 
 class ChangeDeliveryStatusAPIView(APIView):
     
@@ -336,3 +375,7 @@ class SizeTypeViewSet(viewsets.ModelViewSet):
 class ColorTypeViewSet(viewsets.ModelViewSet):
     queryset = ColorType.objects.all()
     serializer_class = ColorTypeSerializer
+    
+class PaymentModeTypeViewSet(viewsets.ModelViewSet):
+    queryset = PaymentModeType.objects.all()
+    serializer_class = PaymentModeTypeSerializer

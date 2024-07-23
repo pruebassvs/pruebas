@@ -26,7 +26,7 @@ class PurchaseService:
         return purchase_detail
 
     @staticmethod
-    def confirm_purchase(user, cart):
+    def confirm_purchase(user, cart, payment_method_id):
         try:
             if cart.items.count() == 0:
                 raise ValueError("There are no products in the cart to proceed with the purchase.")
@@ -44,7 +44,7 @@ class PurchaseService:
             purchase = PurchaseService.create_purchase(
                 user=user,
                 invoice_number=generate_invoice_number(),
-                payment_type_id=1,
+                payment_type_id=payment_method_id,
                 total=total,
             )
             

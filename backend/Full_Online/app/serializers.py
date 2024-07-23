@@ -192,3 +192,8 @@ class DeliveryHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = DeliveryHistory
         fields = ["id", "description", "change_date"]   
+
+class PaymentModeTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentModeType
+        fields = ["id", "description"]   

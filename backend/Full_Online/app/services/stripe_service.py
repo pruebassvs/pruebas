@@ -21,9 +21,9 @@ class StripeService:
             raise e
 
     @staticmethod
-    def confirm_payment_intent(payment_intent_id, payment_method_id: str):
+    def confirm_payment_intent(payment_intent, payment_method):
         try:
-            intent = stripe.PaymentIntent.confirm(payment_intent_id, payment_method=payment_method_id)
+            intent = stripe.PaymentIntent.confirm(payment_intent, payment_method=payment_method)
             return intent
         except Exception as e:
             raise e
