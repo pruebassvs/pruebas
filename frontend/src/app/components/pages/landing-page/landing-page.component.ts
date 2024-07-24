@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CarouselComponent } from '../../component/carousel/carousel.component';
 import { CollectionsComponent } from '../../component/collections/collections.component';
 import { RouterLink } from '@angular/router';
-RouterLink
+
 
 @Component({
   selector: 'app-landing-page',

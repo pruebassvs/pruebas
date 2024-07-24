@@ -11,8 +11,11 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth-service/auth.service';
+import { EmailService } from '../../../services/email/email.service';
 import { NewUser} from '../../../types/types';
 import Swal from 'sweetalert2';
+import { EmailData } from '../../../types/types';
+import { EMAIL_RESPONSES } from '../../../utils/email_responses';
 
 @Component({
   selector: 'app-register-page',
@@ -27,7 +30,8 @@ export class RegisterPageComponent {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private emailService: EmailService
   ) {
     this.form = this.formBuilder.group(
       {
@@ -121,7 +125,18 @@ export class RegisterPageComponent {
         phone: this.form.value.phone,
         adress:this.form.value.adress,
       };
+      
+      const emailData : EmailData= {
+        subject: EMAIL_RESPONSES.CONFIRMATION_REGISTER_SUBJECT,
+        message: EMAIL_RESPONSES.CONFIRMATION_REGISTER_MESSAGE,  
+        to_email: this.form.value.email,
+      }
 
+
+      this.emailService.sendEmail(emailData).subscribe({
+        next: () => console.log('Order confirmation email sent'),
+        error: (error) => console.error('Error sending email:', error)
+      });
       this.authService.register(newUser).subscribe({
         next: (res) => {
           if (res.user) {

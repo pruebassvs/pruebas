@@ -47,6 +47,13 @@ INSTALLED_APPS = [
     'django_filters',
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587  
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'fullstorefullstore3@gmail.com'
+EMAIL_HOST_PASSWORD = 'zhcs iybw dhmf yuzm'
+
 REST_KNOX = {
     'TOKEN_TTL': timedelta(hours=10), 
     'AUTO_REFRESH': False, 

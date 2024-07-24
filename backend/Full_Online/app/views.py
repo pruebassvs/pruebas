@@ -17,7 +17,8 @@ from .services.cart_service import CartService
 from .services.stripe_service import StripeService
 from .services.purchase_service import PurchaseService
 from .services.delivery_service import DeliveryService
-from .serializers import UserSerializer, ProductSerializer, UserUpdateSerializer,PaymentModeTypeSerializer, DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer, ShoeModelTypeSerializer,BrandTypeSerializer,SizeTypeSerializer, ColorTypeSerializer
+from .services.email_service import EmailService
+from .serializers import UserSerializer, ProductSerializer,EmailSerializer, UserUpdateSerializer,PaymentModeTypeSerializer, DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer, ShoeModelTypeSerializer,BrandTypeSerializer,SizeTypeSerializer, ColorTypeSerializer
 from .models import  Product, Cart,CartDetail, Purchase, PaymentModeType, DeliveryStatusType, Delivery,DeliveryHistory, ShoeModelType, BrandType,SizeType,ColorType
 from knox.settings import knox_settings
 from datetime import datetime, timezone
@@ -379,3 +380,21 @@ class ColorTypeViewSet(viewsets.ModelViewSet):
 class PaymentModeTypeViewSet(viewsets.ModelViewSet):
     queryset = PaymentModeType.objects.all()
     serializer_class = PaymentModeTypeSerializer
+    
+class SendEmailView(APIView):
+    def post(self, request):
+        serializer = EmailSerializer(data=request.data)
+        if serializer.is_valid():
+            subject = serializer.validated_data['subject']
+            message = serializer.validated_data['message']
+            to_email = serializer.validated_data['to_email']
+            
+            email_service = EmailService(subject, message, to_email)
+            result = email_service.send_email()
+            
+            if result['status'] == 'success':
+                return Response({'status': 'success'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'status': 'error', 'message': result.get('message')}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

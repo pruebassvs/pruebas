@@ -196,4 +196,9 @@ class DeliveryHistorySerializer(serializers.ModelSerializer):
 class PaymentModeTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentModeType
-        fields = ["id", "description"]   
+        fields = ["id", "description"] 
+        
+class EmailSerializer(serializers.Serializer):
+    subject = serializers.CharField(max_length=255)
+    message = serializers.CharField()
+    to_email = serializers.EmailField()  

@@ -13,6 +13,7 @@ import { AdminDashboardComponent } from './components/pages/admin-dashboard/admi
 import { DeliveriesComponent } from './components/component/deliveries/deliveries.component';
 import { StockAdminComponent } from './components/component/stock-admin/stock-admin.component';
 import { NewProductComponent } from './components/component/new-product/new-product.component';
+import { ContactPageComponent } from './components/pages/contact-page/contact-page.component';
 
 
 export const routes: Routes = [
@@ -31,6 +32,7 @@ export const routes: Routes = [
       ]},
     {path:"products", component: ProductListComponent},
     {path:"cart", component: CartDetailComponent},
+    {path:"contact-page", component: ContactPageComponent},
     { path: 'products/:id', component: ProductDetailComponent },
     { path: '**', component: NotFoundComponent },
 ];

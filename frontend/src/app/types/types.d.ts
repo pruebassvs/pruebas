@@ -175,4 +175,13 @@ export interface Product {
     id: number;
     description: string;
   }
+  export interface EmailData {
+    subject: string;
+    message: string;
+    to_email: string;
+  }
+  export interface EmailResponse {
+    status: 'success' | 'error';
+    message?: string;
+  }
 

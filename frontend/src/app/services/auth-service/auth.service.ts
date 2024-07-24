@@ -19,6 +19,7 @@ export class AuthService {
   public userEmail = new BehaviorSubject<string>(
     this.cookies.get('userEmail') || ''
   );
+  userEmail$= this.userEmail.asObservable()
 
   constructor(private http: HttpClient, private loaderService: LoaderService) {}
 

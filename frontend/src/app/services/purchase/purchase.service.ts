@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { PurchaseConfirmationResponse, Purchase , PaymentTypes} from '../../types/types';
+import { PurchaseConfirmationResponse, Purchase , PaymentTypes, EmailData} from '../../types/types';
 import { ENDPOINT } from '../../utils/utils';
 import { tap, finalize } from 'rxjs';
 import { CartService } from '../cart/cart.service';
 import { catchError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { LoaderService } from '../loader/loader.service';
+import { EmailService } from '../email/email.service';
+import { AuthService } from '../auth-service/auth.service';
+import { EMAIL_RESPONSES } from '../../utils/email_responses';
 
 
 @Injectable({ 
@@ -14,15 +17,45 @@ import { LoaderService } from '../loader/loader.service';
 })
 export class PurchaseService {
 
-  constructor(private cartService:CartService, private http: HttpClient, private loaderService: LoaderService) { }
+  private userEmail: string | null = null; 
+
+  constructor(private cartService:CartService, private http: HttpClient, private loaderService: LoaderService, private emailService: EmailService, private authService: AuthService){
+    // Suscribirse al observable de email del usuario
+    this.authService.userEmail$.subscribe({
+      next: (userEmail) => {
+        if (userEmail) {
+          this.userEmail = userEmail;
+        }
+      },
+      error: (error) => console.error('Error getting user email:', error)
+    });
+  }
 
   public confirmPurchase(Payment_method_id: number): Observable<PurchaseConfirmationResponse> { 
     this.loaderService.show()
     return this.http.post<PurchaseConfirmationResponse>(ENDPOINT + 'purchase/confirm_purchase/', { Payment_method_id }).pipe(
-      tap(() => {
-          this.cartService.getCart().subscribe(); 
+      tap((response) => {
+        this.cartService.getCart().subscribe();
+        
+        if (this.userEmail) {
+          
+          const emailData : EmailData= {
+            subject: EMAIL_RESPONSES.CONFIRMATION_PURCHASE_SUBJECT,
+            message: `
+                        ${EMAIL_RESPONSES.CONFIRMATION_PURCHASE_MESSAGE}
+                        Delivery Tracking Number: ${response.delivery.tracking_number}
+                    `,
+            to_email: this.userEmail
+
+          };
+          this.emailService.sendEmail(emailData).subscribe({
+            next: () => console.log('Order confirmation email sent'),
+            error: (error) => console.error('Error sending email:', error)
+          });
+        } else {
+          console.warn('User email is not available for sending the confirmation email.');
         }
-      ),
+      }),
       catchError((error) => {
         console.error(`Error occurred while confirming purchase:`, error);
         console.log(error)
