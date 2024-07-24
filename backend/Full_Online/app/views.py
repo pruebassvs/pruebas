@@ -18,14 +18,18 @@ from .services.stripe_service import StripeService
 from .services.purchase_service import PurchaseService
 from .services.delivery_service import DeliveryService
 from .services.email_service import EmailService
-from .serializers import UserSerializer, ProductSerializer,EmailSerializer, UserUpdateSerializer,PaymentModeTypeSerializer, DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer, ShoeModelTypeSerializer,BrandTypeSerializer,SizeTypeSerializer, ColorTypeSerializer
-from .models import  Product, Cart,CartDetail, Purchase, PaymentModeType, DeliveryStatusType, Delivery,DeliveryHistory, ShoeModelType, BrandType,SizeType,ColorType
+from .serializers import UserSerializer, ProductSerializer,PasswordResetConfirmSerializer, PasswordResetRequestSerializer,EmailSerializer, UserUpdateSerializer,PaymentModeTypeSerializer, DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer, ShoeModelTypeSerializer,BrandTypeSerializer,SizeTypeSerializer, ColorTypeSerializer
+from .models import  Product, Cart,CartDetail,CustomUser, Purchase, PaymentModeType, DeliveryStatusType, Delivery,DeliveryHistory, ShoeModelType, BrandType,SizeType,ColorType
 from knox.settings import knox_settings
 from datetime import datetime, timezone
 import random
 from django_filters.rest_framework import DjangoFilterBackend
 from .utils.filters import ProductFilter
-
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import EmailMessage
+from django.utils.encoding import force_str
 
 
 class LoginView(KnoxLoginView):
@@ -398,3 +402,51 @@ class SendEmailView(APIView):
                 return Response({'status': 'error', 'message': result.get('message')}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class PasswordResetRequestView(APIView):
+    def post(self, request):
+        serializer = PasswordResetRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            user = CustomUser.objects.filter(email=email).first()
+            if user:
+                token = default_token_generator.make_token(user)
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                reset_link = f"http://localhost:8000/api/reset-password/{uid}/{token}/"
+                message = f"Click the link to reset your password: {reset_link}"
+                email_message = EmailMessage(
+                    'Password Reset Request',
+                    message,
+                    'your-email@example.com',
+                    [email]
+                )
+                email_message.send()
+            return Response({'status': 'success', 'message': 'If an account with that email exists, a reset link has been sent.'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class PasswordResetConfirmView(APIView):
+    def post(self, request, uid, token):
+      
+        new_password = request.data.get('new_password')
+        confirm_password = request.data.get('confirm_password')
+
+        if not uid or not token:
+            return Response({'error': 'Invalid request'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            uid = urlsafe_base64_decode(uid).decode()
+            user = CustomUser.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+            return Response({'error': 'Invalid user'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not default_token_generator.check_token(user, token):
+            return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if new_password != confirm_password:
+            return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save()
+
+        return Response({'success': 'Password has been reset'}, status=status.HTTP_200_OK)

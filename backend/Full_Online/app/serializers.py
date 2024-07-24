@@ -202,3 +202,11 @@ class EmailSerializer(serializers.Serializer):
     subject = serializers.CharField(max_length=255)
     message = serializers.CharField()
     to_email = serializers.EmailField()  
+    
+class PasswordResetRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    uid = serializers.CharField()
+    token = serializers.CharField()
+    new_password = serializers.CharField()

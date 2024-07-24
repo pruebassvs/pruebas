@@ -1,5 +1,5 @@
 from django.urls import path, include
-from app.views import ProductViewSet,SendEmailView, PaymentModeTypeViewSet, ShoeModelTypeViewSet,BrandTypeViewSet,ColorTypeViewSet,SizeTypeViewSet, LoginView,UserUpdateView,UserDetailView, LogoutView, LogoutAllView, RegisterView, CartViewSet, PurchaseViewSet, ChangeDeliveryStatusAPIView
+from app.views import PasswordResetConfirmView, PasswordResetRequestView, ProductViewSet,SendEmailView, PaymentModeTypeViewSet, ShoeModelTypeViewSet,BrandTypeViewSet,ColorTypeViewSet,SizeTypeViewSet, LoginView,UserUpdateView,UserDetailView, LogoutView, LogoutAllView, RegisterView, CartViewSet, PurchaseViewSet, ChangeDeliveryStatusAPIView
 from rest_framework import routers
 
 router = routers.DefaultRouter()
@@ -25,5 +25,7 @@ urlpatterns = [
     path('deliveries/', ChangeDeliveryStatusAPIView.as_view(), name='change delivery_status'),
     path('purchase/confirm_purchase/', PurchaseViewSet.as_view({'post': 'confirm_purchase'}), name='confirm-purchase'),
     path('purchase/user_purchases/', PurchaseViewSet.as_view({'get': 'user_purchases'}), name='user-purchases'),
-    path('send_mail/', SendEmailView.as_view(), name='send_email')
+    path('send_mail/', SendEmailView.as_view(), name='send_email'),
+    path('reset-password-request/', PasswordResetRequestView.as_view(), name='password_reset_request'),
+    path('reset-password/<uid>/<token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
 ]
