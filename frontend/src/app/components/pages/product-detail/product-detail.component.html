@@ -36,7 +36,7 @@
       <span class="mt-1.5 inline-block bg-black px-5 py-3 text-xs hover:bg-red-700 focus:outline-none focus:ring focus:ring-yellow-400 font-medium uppercase tracking-wide text-white"> New </span>
       <h3 class="mt-4 text-lg font-medium text-gray-900">{{product.model?.model}}</h3>
       <p class="mt-1.5 text-sm text-gray-700">{{product.detail}}</p>
-      <p class="mt-1.5 text-sm text-gray-700">{{product.price}}</p>
+      <p class="mt-1.5 text-sm text-gray-700">$ {{product.price}}</p>
       @if (isLogged && !isAdmin){
         <div class="mt-4 flex items-center justify-evenly">
           <button type="button" class="inline-block bg-black px-5 py-3 text-xs hover:bg-red-700 focus:outline-none focus:ring focus:ring-yellow-400 font-medium uppercase tracking-wide text-white" (click)="addItemCart(product.id, quantity)">Add to Cart</button>
