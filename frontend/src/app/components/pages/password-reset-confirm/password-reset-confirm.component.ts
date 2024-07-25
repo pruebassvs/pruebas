@@ -16,16 +16,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class PasswordResetConfirmComponent implements OnInit {
 
-  confirmForm!: FormGroup;
+  form!: FormGroup;
   uid: string | null = null;
   token: string | null = null;
+  
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router
   ) {
-    this.confirmForm = this.fb.group({
+    this.form = this.fb.group({
       new_password: ['',[
         Validators.required,
         Validators.minLength(6),
@@ -46,15 +47,15 @@ export class PasswordResetConfirmComponent implements OnInit {
     });
   }
   get new_password() {
-    return this.confirmForm.get('new_password');
+    return this.form.get('new_password');
   }
   get confirm_password() {
-    return this.confirmForm.get('confirm_password');
+    return this.form.get('confirm_password');
   }
 
-  onSubmit(): void {
-    if (this.confirmForm.valid && this.uid && this.token) {
-      const { new_password, confirm_password } = this.confirmForm.value;
+  onSubmit(event:Event): void {
+    if (this.form.valid && this.uid && this.token) {
+      const { new_password, confirm_password } = this.form.value;
       this.authService.confirmPasswordReset(this.uid, this.token, new_password, confirm_password).subscribe({
         next: (res) => {
           console.log(res.message ) ;

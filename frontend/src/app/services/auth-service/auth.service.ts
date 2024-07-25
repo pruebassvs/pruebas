@@ -127,7 +127,7 @@ export class AuthService {
 
   confirmPasswordReset(uid: string, token: string, newPassword: string, confirmPassword: string): Observable<PasswordResetConfirmResponse> {
     const body: PasswordResetConfirm = { new_password: newPassword, confirm_password: confirmPassword };
-    return this.http.post<PasswordResetConfirmResponse>(`${ENDPOINT}/reset-password/${uid}/${token}/`, body).pipe(
+    return this.http.post<PasswordResetConfirmResponse>(`${ENDPOINT}reset-password/${uid}/${token}/`, body).pipe(
       catchError((error) => {
         console.error('Password reset confirmation error:', error);
         throw error;
