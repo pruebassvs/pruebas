@@ -184,4 +184,23 @@ export interface Product {
     status: 'success' | 'error';
     message?: string;
   }
-
+  export interface PasswordResetRequestResponse {
+    success: boolean;
+    message: string;
+  }
+  
+  export interface PasswordResetConfirmResponse {
+    success: boolean;
+    message: string;
+    uid: string;
+    token: string;
+  }
+  export interface PasswordResetRequest {
+    email: string;
+  }
+  
+  export interface PasswordResetConfirm {
+   
+    new_password: string;
+    confirm_password: string;
+  }

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap, catchError, finalize } from 'rxjs';
 import { ENDPOINT } from '../../utils/utils';
 import { BehaviorSubject } from 'rxjs';
-import { NewUser,UserRegistrationResponse, LoginResponse, LogoutResponse, UserLogin } from '../../types/types';
+import { NewUser,UserRegistrationResponse, LoginResponse, LogoutResponse, UserLogin, PasswordResetRequest, PasswordResetConfirm, PasswordResetRequestResponse, PasswordResetConfirmResponse } from '../../types/types';
 import Cookies from 'universal-cookie';
 import { LoaderService } from '../loader/loader.service';
 
@@ -113,7 +113,26 @@ export class AuthService {
         this.cookies.set('isAdmin', is_staff);
     }
 
+  }  
+  requestPasswordReset(email: string): Observable<PasswordResetRequestResponse> {
+    const body: PasswordResetRequest = { email };
+    return this.http.post<PasswordResetRequestResponse>(`${ENDPOINT}reset-password-request/`, body).pipe(
+      catchError((error) => {
+        console.error('Password reset request error:', error);
+        throw error;
+      })
+    );
   }
-
   
+
+  confirmPasswordReset(uid: string, token: string, newPassword: string, confirmPassword: string): Observable<PasswordResetConfirmResponse> {
+    const body: PasswordResetConfirm = { new_password: newPassword, confirm_password: confirmPassword };
+    return this.http.post<PasswordResetConfirmResponse>(`${ENDPOINT}/reset-password/${uid}/${token}/`, body).pipe(
+      catchError((error) => {
+        console.error('Password reset confirmation error:', error);
+        throw error;
+      })
+    );
+  }
 }
+ 

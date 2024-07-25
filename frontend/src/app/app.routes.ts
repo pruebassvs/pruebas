@@ -14,6 +14,8 @@ import { DeliveriesComponent } from './components/component/deliveries/deliverie
 import { StockAdminComponent } from './components/component/stock-admin/stock-admin.component';
 import { NewProductComponent } from './components/component/new-product/new-product.component';
 import { ContactPageComponent } from './components/pages/contact-page/contact-page.component';
+import { PasswordResetComponent } from './components/pages/password-reset/password-reset.component';
+import { PasswordResetConfirmComponent } from './components/pages/password-reset-confirm/password-reset-confirm.component';
 
 
 export const routes: Routes = [
@@ -21,6 +23,8 @@ export const routes: Routes = [
     {path:"home", component:LandingPageComponent},
     {path:"login", component:LoginPageComponent},
     {path:"register", component: RegisterPageComponent},
+    {path:"reset-password", component: PasswordResetComponent},
+    {path:'reset-password/:uid/:token', component: PasswordResetConfirmComponent},
     {path:"user", component: CustomerDashboardComponent, children: [
         { path: 'purchase-history', component: PurchaseHistoryComponent },
         { path: 'user-update', component: UserUpdateComponent},
