@@ -16,6 +16,7 @@ import { NewUser} from '../../../types/types';
 import Swal from 'sweetalert2';
 import { EmailData } from '../../../types/types';
 import { EMAIL_RESPONSES } from '../../../utils/email_responses';
+import { notEqualPasswordValidator } from '../../../utils/validators';
 
 @Component({
   selector: 'app-register-page',
@@ -77,7 +78,7 @@ export class RegisterPageComponent {
           ],
         ],
       }, 
-      { validators: this.notEqualPasswordValidator() }
+      { validators: notEqualPasswordValidator('password1', 'password2') }
     );
   }
 
@@ -101,17 +102,6 @@ export class RegisterPageComponent {
   }
   get adress() {
     return this.form.get('adress');
-  }
-
-  notEqualPasswordValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const pass1 = control.get('password1');
-      const pass2 = control.get('password2');
-
-      return pass1 && pass2 && pass1.value !== pass2.value
-        ? { notEqualPassword: true }
-        : null;
-    };
   }
 
   onRegister(event: Event): void {

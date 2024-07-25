@@ -15,12 +15,5 @@ import { LoaderComponent } from './components/component/loader/loader.component'
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit {
-  constructor(private authService: AuthService, private router: Router) {}
-
-  ngOnInit() {
-    if (!this.authService.checkIsLogged()) {
-      this.router.navigate(['/login']);
-    }
-  }
+export class AppComponent {
 }

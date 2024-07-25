@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  ReactiveFormsModule,
   FormBuilder,
   FormGroup,
+  ReactiveFormsModule,
   Validators,
-} from '@angular/forms'; 
+  ValidatorFn,
+  ValidationErrors,
+  AbstractControl,
+} from '@angular/forms';
 import { AuthService } from '../../../services/auth-service/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { notEqualPasswordValidator } from '../../../utils/validators';
 @Component({
   selector: 'app-password-reset-confirm',
   standalone: true,
@@ -37,7 +41,7 @@ export class PasswordResetConfirmComponent implements OnInit {
         Validators.minLength(6),
         Validators.maxLength(20),
         ],]
-    });
+      }, { validators: notEqualPasswordValidator('new_password', 'confirm_password') });
   }
 
   ngOnInit(): void {
