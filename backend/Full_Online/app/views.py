@@ -11,15 +11,15 @@ from knox.views import LoginView as KnoxLoginView
 from knox.views import LogoutView as KnoxLogoutView
 from knox.views import LogoutAllView as KnoxLogoutAllView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
-from .permissions import IsAdminOrReadOnly
+from .permissions import IsAdminOrReadOnly, IsAdminOnly, IsConversationOwnerOrAdmin, IsUserOrAdmin
 from rest_framework.decorators import action
 from .services.cart_service import CartService
 from .services.stripe_service import StripeService
 from .services.purchase_service import PurchaseService
 from .services.delivery_service import DeliveryService
 from .services.email_service import EmailService
-from .serializers import UserSerializer, ProductSerializer,PasswordResetConfirmSerializer, PasswordResetRequestSerializer,EmailSerializer, UserUpdateSerializer,PaymentModeTypeSerializer, DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer, ShoeModelTypeSerializer,BrandTypeSerializer,SizeTypeSerializer, ColorTypeSerializer
-from .models import  Product, Cart,CartDetail,CustomUser, Purchase, PaymentModeType, DeliveryStatusType, Delivery,DeliveryHistory, ShoeModelType, BrandType,SizeType,ColorType
+from .serializers import UserSerializer, ProductSerializer, ConversationSerializer, MessageSerializer ,PasswordResetConfirmSerializer, PasswordResetRequestSerializer,EmailSerializer, UserUpdateSerializer,PaymentModeTypeSerializer, DeliverySerializer,DeliveryHistorySerializer, CartSerializer, CartDetailSerializer, PurchaseSerializer,PurchaseDetailSerializer, ShoeModelTypeSerializer,BrandTypeSerializer,SizeTypeSerializer, ColorTypeSerializer
+from .models import  Product, Cart,CartDetail,CustomUser, Purchase, Conversation, Message, PaymentModeType, DeliveryStatusType, Delivery,DeliveryHistory, ShoeModelType, BrandType,SizeType,ColorType
 from knox.settings import knox_settings
 from datetime import datetime, timezone
 import random
@@ -29,7 +29,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
-from django.utils.encoding import force_str
+from datetime import datetime, timezone
 
 
 class LoginView(KnoxLoginView):
@@ -134,6 +134,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProductFilter
+    permission_classes = [IsAdminOrReadOnly]
     
     @action(detail=False, methods=['get'])
     def get_random_product_excluding_id(self, request):
@@ -321,7 +322,7 @@ class PurchaseViewSet(viewsets.ModelViewSet):
         return Response({'error': 'Unsupported payment method'}, status=status.HTTP_400_BAD_REQUEST)
 
 class ChangeDeliveryStatusAPIView(APIView):
-    
+    permission_classes = [IsAdminOnly]
 
     def patch(self, request):
         try:
@@ -368,24 +369,30 @@ class ChangeDeliveryStatusAPIView(APIView):
 class ShoeModelTypeViewSet(viewsets.ModelViewSet):
     queryset = ShoeModelType.objects.all()
     serializer_class = ShoeModelTypeSerializer
+    permission_classes = [IsAdminOrReadOnly]
 
 class BrandTypeViewSet(viewsets.ModelViewSet):
     queryset = BrandType.objects.all()
     serializer_class = BrandTypeSerializer
+    permission_classes = [IsAdminOrReadOnly]
 
 class SizeTypeViewSet(viewsets.ModelViewSet):
     queryset = SizeType.objects.all()
     serializer_class = SizeTypeSerializer
+    permission_classes = [IsAdminOrReadOnly]
 
 class ColorTypeViewSet(viewsets.ModelViewSet):
     queryset = ColorType.objects.all()
     serializer_class = ColorTypeSerializer
+    permission_classes = [IsAdminOrReadOnly]
     
 class PaymentModeTypeViewSet(viewsets.ModelViewSet):
     queryset = PaymentModeType.objects.all()
     serializer_class = PaymentModeTypeSerializer
+    permission_classes = [IsAdminOrReadOnly]
     
 class SendEmailView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = EmailSerializer(data=request.data)
         if serializer.is_valid():
@@ -405,6 +412,7 @@ class SendEmailView(APIView):
     
 
 class PasswordResetRequestView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = PasswordResetRequestSerializer(data=request.data)
         if serializer.is_valid():
@@ -427,8 +435,9 @@ class PasswordResetRequestView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class PasswordResetConfirmView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request, uid, token):
-      
+        
         new_password = request.data.get('new_password')
         confirm_password = request.data.get('confirm_password')
 
@@ -451,3 +460,52 @@ class PasswordResetConfirmView(APIView):
         user.save()
 
         return Response({'success': 'Password has been reset'}, status=status.HTTP_200_OK)
+    
+    
+class ConversationViewSet(viewsets.ModelViewSet):
+    queryset = Conversation.objects.all()
+    serializer_class = ConversationSerializer
+    def get_permissions(self):
+        if self.request.method in ['POST', 'GET']:
+            self.permission_classes = [IsUserOrAdmin]
+        elif self.request.method in ['PUT', 'PATCH', 'DELETE']:
+            self.permission_classes = [IsConversationOwnerOrAdmin] 
+        else:  
+            self.permission_classes = [IsAdminOnly]
+        return [permission() for permission in self.permission_classes]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    @action(detail=True, methods=['post'] ,permission_classes = [IsAdminOnly])
+    def close(self, request, pk=None):
+        conversation = self.get_object()
+        if conversation.closed_at:
+            return Response({"detail": "Conversation already closed."}, status=400)
+        conversation.closed_at = datetime.now(timezone.utc)  
+        conversation.open = False
+        conversation.save()
+        serializer = self.get_serializer(conversation)
+        return Response(serializer.data)
+
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+    def get_permissions(self):
+        if self.request.method in ['POST', 'GET']:
+            self.permission_classes = [IsUserOrAdmin]
+        elif self.request.method in ['PUT', 'PATCH', 'DELETE']:
+            self.permission_classes = [IsAdminOnly]
+        else: 
+            self.permission_classes = [IsAdminOrReadOnly]
+        return [permission() for permission in self.permission_classes]
+
+    def get_queryset(self):
+        queryset = Message.objects.all()
+        conversation_id = self.request.query_params.get('conversation', None)
+        if conversation_id is not None:
+            queryset = queryset.filter(conversation_id=conversation_id)
+        return queryset
+    
+    def perform_create(self, serializer):
+        serializer.save(sender=self.request.user)

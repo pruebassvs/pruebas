@@ -16,6 +16,8 @@ import { NewProductComponent } from './components/component/new-product/new-prod
 import { ContactPageComponent } from './components/pages/contact-page/contact-page.component';
 import { PasswordResetComponent } from './components/pages/password-reset/password-reset.component';
 import { PasswordResetConfirmComponent } from './components/pages/password-reset-confirm/password-reset-confirm.component';
+import { MesaggingAdminComponent } from './components/component/mesagging-admin/mesagging-admin.component';
+import { MesaggingUserComponent } from './components/component/mesagging-user/mesagging-user.component';
 
 
 export const routes: Routes = [
@@ -28,11 +30,15 @@ export const routes: Routes = [
     {path:"user", component: CustomerDashboardComponent, children: [
         { path: 'purchase-history', component: PurchaseHistoryComponent },
         { path: 'user-update', component: UserUpdateComponent},
+        { path: 'mesagge-user', component: MesaggingUserComponent},
+       
       ]},
       {path:"admin", component: AdminDashboardComponent, children: [
         { path: 'deliveries', component: DeliveriesComponent },
         { path: 'stock-admin', component: StockAdminComponent},
         { path: 'new-product', component: NewProductComponent},
+        { path: 'mesagge-admin', component: MesaggingAdminComponent},
+   
       ]},
     {path:"products", component: ProductListComponent},
     {path:"cart", component: CartDetailComponent},

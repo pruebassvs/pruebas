@@ -11,7 +11,7 @@ import { EmailData, EmailResponse } from '../../types/types';
 @Injectable({
   providedIn: 'root'
 })
-export class EmailService {
+export class EmailService { 
 
   constructor(private http: HttpClient, private loaderService: LoaderService) { }
 

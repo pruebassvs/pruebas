@@ -1,5 +1,5 @@
 from django.urls import path, include
-from app.views import PasswordResetConfirmView, PasswordResetRequestView, ProductViewSet,SendEmailView, PaymentModeTypeViewSet, ShoeModelTypeViewSet,BrandTypeViewSet,ColorTypeViewSet,SizeTypeViewSet, LoginView,UserUpdateView,UserDetailView, LogoutView, LogoutAllView, RegisterView, CartViewSet, PurchaseViewSet, ChangeDeliveryStatusAPIView
+from app.views import PasswordResetConfirmView, ConversationViewSet, MessageViewSet, PasswordResetRequestView, ProductViewSet,SendEmailView, PaymentModeTypeViewSet, ShoeModelTypeViewSet,BrandTypeViewSet,ColorTypeViewSet,SizeTypeViewSet, LoginView,UserUpdateView,UserDetailView, LogoutView, LogoutAllView, RegisterView, CartViewSet, PurchaseViewSet, ChangeDeliveryStatusAPIView
 from rest_framework import routers
 
 router = routers.DefaultRouter()
@@ -12,6 +12,8 @@ router.register(r"brand",BrandTypeViewSet)
 router.register(r"color",ColorTypeViewSet)
 router.register(r"size",SizeTypeViewSet)
 router.register(r"payment-mode",PaymentModeTypeViewSet)
+router.register(r'conversations', ConversationViewSet)
+router.register(r'messages', MessageViewSet)
 
 
 urlpatterns = [

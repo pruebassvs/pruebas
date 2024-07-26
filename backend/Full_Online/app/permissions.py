@@ -13,3 +13,21 @@ class IsAdminOnly(permissions.BasePermission):
     def has_permission(self, request, view):
 
         return request.user and request.user.is_staff
+
+class IsUserOrAdmin(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS: 
+            return True
+        if request.method in ['POST']:
+            return request.user and request.user.is_authenticated
+        return request.user and request.user.is_staff
+
+class IsConversationOwnerOrAdmin(permissions.BasePermission):
+ 
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:  # GET, HEAD, OPTIONS
+            return True
+        if request.user.is_staff:  # Admin can perform any action
+            return True
+        return obj.user == request.user  # Only the owner can modify or delete

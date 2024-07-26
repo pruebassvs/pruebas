@@ -204,3 +204,27 @@ export interface Product {
     new_password: string;
     confirm_password: string;
   }
+
+export interface Conversation {
+  id: number;
+  user: User;
+  open: boolean;
+  created_at: string;
+  closed_at?: string;
+}
+
+export interface NewConversation {
+
+}
+
+export interface Message {
+  id: number;
+  sender: User;
+  content: string;
+  created_at: string;
+  conversation: number;
+}
+export interface NewMessage {
+  content: string;
+  conversation: number;
+}

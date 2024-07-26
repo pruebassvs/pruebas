@@ -210,3 +210,26 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
     uid = serializers.CharField()
     token = serializers.CharField()
     new_password = serializers.CharField()
+    
+class MessageSerializer(serializers.ModelSerializer):
+    sender = UserSerializer(read_only=True)  # Representa al usuario que envió el mensaje
+
+    class Meta:
+        model = Message
+        fields = ['id', 'sender', 'content', 'created_at', 'conversation']
+    
+    def validate(self, data):
+        conversation = data.get('conversation')
+        if conversation and not Conversation.objects.filter(id=conversation.id).exists():
+            raise serializers.ValidationError("The conversation does not exist.")
+        if conversation and conversation.closed_at:
+            raise serializers.ValidationError("Cannot add a message to a closed conversation.")
+        return data
+
+class ConversationSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)  # Representa al usuario asociado 
+    messages = MessageSerializer(many=True, read_only=True)  # Incluye detalles completos de los mensajes asociados
+
+    class Meta:
+        model = Conversation
+        fields = ['id', 'user', 'created_at', 'closed_at', 'messages', 'open']
