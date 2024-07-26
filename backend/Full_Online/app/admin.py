@@ -85,4 +85,19 @@ class DeliveryAdmin(admin.ModelAdmin):
     list_filter = ('description','change_date')
     search_fields = ('description','change_date')
     ordering = ('-change_date',)  
+    
+@admin.register(Conversation)
+class DeliveryAdmin(admin.ModelAdmin):
+    list_display = ('user', 'created_at', 'closed_at','open' )
+    list_filter = ('user','open')
+    search_fields = ('user','open')
+    ordering = ('-created_at',)  
+    
+@admin.register(Message)
+class DeliveryAdmin(admin.ModelAdmin):
+    list_display = ('conversation', 'sender', 'created_at', 'content')
+    list_filter = ('sender','conversation')
+    search_fields = ('sender','conversation')
+    ordering = ('-created_at',)  
+
 

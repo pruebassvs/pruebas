@@ -232,4 +232,4 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Conversation
-        fields = ['id', 'user', 'created_at', 'closed_at', 'messages', 'open']
+        fields = ['id','name', 'user', 'created_at', 'closed_at', 'messages', 'open']

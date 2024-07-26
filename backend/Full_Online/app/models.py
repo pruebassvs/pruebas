@@ -19,10 +19,12 @@ class CustomUser(AbstractUser):
         return self.email
 
 class Conversation(models.Model):
+    name = models.CharField(max_length=255, blank=False, null=False)
     user = models.ForeignKey(CustomUser, related_name='conversations', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     closed_at = models.DateTimeField(null=True, blank=True)
     open= models.BooleanField(default=True)
+    
 
     def __str__(self):
         return f"Conversation with {self.user} {'(Closed)' if self.closed_at else ''}"

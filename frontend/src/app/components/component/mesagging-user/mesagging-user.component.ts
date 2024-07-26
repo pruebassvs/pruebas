@@ -19,6 +19,8 @@ export class MesaggingUserComponent implements OnInit {
   selectedConversation: Conversation | null = null;
   messages: Message[] = [];
   messageForm: FormGroup;
+  newConversationName: string = '';
+  
 
   constructor(
     private messagingService: MessagingService,
@@ -62,11 +64,12 @@ export class MesaggingUserComponent implements OnInit {
   }}
 
   createConversation(): void {
-    this.messagingService.createConversation().subscribe({
+    this.messagingService.createConversation({ name: this.newConversationName }).subscribe({
       next :(newConversation: Conversation) => {
         this.conversations.unshift(newConversation); //
         this.selectedConversation = newConversation; 
         this.loadMessages(newConversation.id);
+        this.newConversationName = ''
       },
       error: (error) => {
         console.error('Error creating conversation', error);

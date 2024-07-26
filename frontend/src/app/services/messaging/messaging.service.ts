@@ -27,9 +27,9 @@ export class MessagingService {
   }  
   
 
-  createConversation(): Observable<Conversation> {
+  createConversation(conversation: { name: string }): Observable<Conversation> {
     this.loaderService.show();
-    return this.http.post<Conversation>(`${ENDPOINT}conversations/`,{}).pipe(
+    return this.http.post<Conversation>(`${ENDPOINT}conversations/`, conversation).pipe(
       catchError((error) => {
         console.error('Error occurred while sending Email :', error);
         throw error;

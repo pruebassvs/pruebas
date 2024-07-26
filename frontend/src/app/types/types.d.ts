@@ -207,6 +207,7 @@ export interface Product {
 
 export interface Conversation {
   id: number;
+  name: string;
   user: User;
   open: boolean;
   created_at: string;
@@ -214,7 +215,7 @@ export interface Conversation {
 }
 
 export interface NewConversation {
-
+  name: string;
 }
 
 export interface Message {
