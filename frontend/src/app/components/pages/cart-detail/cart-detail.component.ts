@@ -89,6 +89,7 @@ export class CartDetailComponent implements OnInit {
   }
   deleteItem(item_id: number) {
     if (item_id) {
+      if (confirm('Are you sure you want to delete this item?')){
       this.cartService.deleteItem(item_id).subscribe({
         next: (res) => {
           alert('Item deleted');
@@ -103,7 +104,7 @@ export class CartDetailComponent implements OnInit {
       console.error('The item ID is undefined');
     }
   }
-  
+  }
 
   confirmPurchase(event: Event) {
     event.preventDefault(); 

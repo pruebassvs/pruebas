@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OrderByPipe } from '../../../pipes/order-by.pipe';
 
+
 @Component({
   selector: 'app-mesagging-user',
   standalone: true,
@@ -86,7 +87,7 @@ export class MesaggingUserComponent implements OnInit {
       };
       this.messagingService.createMessage(newMessage).subscribe({
         next :(message: Message) => {
-          this.messages.unshift(message); // Inserta el mensaje al principio
+          this.messages.unshift(message); 
           this.messageForm.reset();
         },
         error: (error) => {
