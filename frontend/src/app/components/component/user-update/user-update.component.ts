@@ -9,6 +9,7 @@ import {
 import { User } from '../../../types/types';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user-update',
@@ -77,12 +78,33 @@ export class UserUpdateComponent implements OnInit {
       this.userService.updateUser(formData).subscribe({
         next: (updatedUser: User) => {
           console.log('User updated successfully:', updatedUser);
-          alert('User updated successfully');
+          Swal.fire({
+            text: 'User updated successfully',
+            color: '#ffffff',
+            icon: 'success',
+            width: 300,
+            heightAuto:true,
+            background: '#000',
+            showConfirmButton: true,
+            confirmButtonColor: '#000',
+            
+          });
+          
           
         },
         error: (error) => {
           console.error('Error updating user:', error);
-          alert('Error updating user. Check the console for details.');
+          Swal.fire({
+            text: 'Error updating user. Check the console for details.',
+            color: '#ffffff',
+            icon: 'error',
+            width: 300,
+            heightAuto:true,
+            background: '#000',
+            showConfirmButton: true,
+            confirmButtonColor: '#000',
+            
+          });
           
         }
       });

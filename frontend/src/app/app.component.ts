@@ -7,6 +7,7 @@ import { FooterComponent } from './components/shared/footer/footer.component';
 import { CookieConsentComponent } from './components/component/cookie-consent/cookie-consent.component';
 import { LoaderComponent } from './components/component/loader/loader.component';
 import { WhatsappButtonComponent } from './components/component/whatsapp-button/whatsapp-button.component';
+import { CartService } from './services/cart/cart.service';
 
 
 @Component({
@@ -16,5 +17,13 @@ import { WhatsappButtonComponent } from './components/component/whatsapp-button/
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+
+  constructor(private cartService: CartService, private authService: AuthService) {}
+
+  ngOnInit(): void {
+    if (this.authService.isLogged) {
+      this.cartService.loadInitialCart();
+    }
+  }
 }

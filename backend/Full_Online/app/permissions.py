@@ -31,3 +31,4 @@ class IsConversationOwnerOrAdmin(permissions.BasePermission):
         if request.user.is_staff:  # Admin can perform any action
             return True
         return obj.user == request.user  # Only the owner can modify or delete
+    

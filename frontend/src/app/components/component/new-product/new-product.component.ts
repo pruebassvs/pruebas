@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-new-product',
@@ -83,13 +84,32 @@ addProduct(event: Event): void {
   this.productService.addProduct(newProduct).subscribe({
     next: (addedProduct) => {
       if(addedProduct.id)
-      console.log('Product added successfully:', addedProduct);
-      alert('Product added successfully!');
+      Swal.fire({
+        title: "Product added successfully:",
+        text: "New Stock: " + addedProduct.model,
+        color: '#ffffff',
+        icon: 'success',
+        width: 300,
+        background: '#000',
+        showConfirmButton: true,
+        confirmButtonColor: '#000',
+        
+      });
       this.resetForm();
     },
     error: (err) => {
       console.error('Error adding product:', err);
-      alert('Error adding product. Please try again later.');
+      Swal.fire({
+        title: "Error adding product:",
+        text: 'Error adding product. Please try again later.',
+        color: '#ffffff',
+        icon: 'error',
+        width: 300,
+        background: '#000',
+        showConfirmButton: true,
+        confirmButtonColor: '#000',
+        
+      });
     }
   });
 } else {

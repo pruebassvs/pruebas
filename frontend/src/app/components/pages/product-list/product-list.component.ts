@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../services/auth-service/auth.service';
 import { BrandType } from '../../../types/types';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-product-list',
@@ -96,12 +97,39 @@ addItemCart(product_id?: number, quantity?:number): void {
   if (product_id !== undefined) {
     this.cartService.addItem(product_id, this.quantity).subscribe({
       next: (res) => {
-        alert('Item Added.');
+        Swal.fire({
+          title: "Item Added",
+          text: res.message,
+          color: '#ffffff',
+          width: 300,
+          heightAuto:true,
+          imageUrl: "https://img.freepik.com/foto-gratis/ilustracion-calzado-deportivo-sobre-fondo-azul-generado-ia_188544-19603.jpg?w=1380&t=st=1720619846~exp=1720620446~hmac=c3c9abe9bd869c4c34ba10f563ad4725250fe2a24c598df070a98b49adff834d",
+          imageWidth: 200,
+          imageHeight: 100,
+          imageAlt: "Custom image", 
+          background: '#000',
+          showConfirmButton: true,
+          confirmButtonColor: '#000',
+          
+        });
         console.log(res, product_id, this.quantity);
       },
       error: (error: HttpErrorResponse) => {
         if (error) {
-          alert(error.error.error );
+          Swal.fire({
+            title: error.error.error,
+            color: '#ffffff',
+            width: 300,
+            heightAuto:true,
+            imageUrl: "https://img.freepik.com/foto-gratis/ilustracion-calzado-deportivo-sobre-fondo-azul-generado-ia_188544-19603.jpg?w=1380&t=st=1720619846~exp=1720620446~hmac=c3c9abe9bd869c4c34ba10f563ad4725250fe2a24c598df070a98b49adff834d",
+            imageWidth: 200,
+            imageHeight: 100,
+            imageAlt: "Custom image",
+            background: '#000',
+            showConfirmButton: true,
+            confirmButtonColor: '#000',
+            
+          });
         } else {
           console.error('Error Adding product:', error);
         }

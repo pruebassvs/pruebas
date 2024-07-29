@@ -5,6 +5,7 @@ import { Conversation, Message, NewMessage } from '../../../types/types';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { OrderByPipe } from '../../../pipes/order-by.pipe';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-mesagging-admin',
@@ -91,16 +92,52 @@ export class MesaggingAdminComponent implements OnInit {
   }
 
   deleteConversation(conversationId: number): void {
-    if (confirm('Are you sure you want to delete this conversation?')) {
-      this.messagingService.deleteConversation(conversationId).subscribe({
-        next: () => {
-          this.loadConversations();
-          this.selectedConversation = null;
-        },
-        error: (error) => {
-          console.error('Error deleting conversation', error);
-        }
-      });
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      color: '#ffffff',
+      width: 300,
+      heightAuto: true,
+      background: '#000',
+      showCancelButton: true,
+      confirmButtonColor: '#000',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.messagingService.deleteConversation(conversationId).subscribe({
+          next: () => {
+            Swal.fire({
+              title: 'Deleted!',
+              text: 'The conversation has been deleted.',
+              icon: 'success',
+              color: '#ffffff',
+              width: 300,
+              heightAuto: true,
+              background: '#000',
+              showConfirmButton: true,
+              confirmButtonColor: '#000',
+            });
+            this.loadConversations();  // Refresh the list of conversations
+            this.selectedConversation = null;  // Clear the selected conversation
+          },
+          error: (error) => {
+            Swal.fire({
+              title: 'Error!',
+              text: 'Something went wrong, please try again.',
+              icon: 'error',
+              color: '#ffffff',
+              background: '#000',
+              confirmButtonColor: '#000',
+              width: 300,
+              heightAuto: true
+            });
+            console.error('Error deleting conversation', error);
+          }
+        });
+      }
+    });
   }
 }

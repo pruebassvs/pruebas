@@ -12,6 +12,7 @@ import { catchError } from 'rxjs';
 import { StripeService } from '../../../services/stripe/stripe.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -50,7 +51,7 @@ export class CartDetailComponent implements OnInit {
       error: (error) => console.error(error)
     });
 
-    // Inicializa Stripe
+ 
     this.stripeService.initializeStripe().subscribe({
       next: () => {
         console.log('Stripe initialized successfully');
@@ -58,7 +59,6 @@ export class CartDetailComponent implements OnInit {
       error: (error) => console.error('Error initializing Stripe:', error)
     });
 
-    // Obtén el carrito y el total
     this.cartService.cartSubject$.subscribe({
       next: (cart) => {
         this.cart = cart;
@@ -87,24 +87,62 @@ export class CartDetailComponent implements OnInit {
     console.log('Payment Mode:', this.PaymentMode);
     console.log('Payment Method ID:', this.Payment_method_id);
   }
-  deleteItem(item_id: number) {
+  deleteItem(item_id: number): void {
     if (item_id) {
-      if (confirm('Are you sure you want to delete this item?')){
-      this.cartService.deleteItem(item_id).subscribe({
-        next: (res) => {
-          alert('Item deleted');
-          console.log(res);
-        },
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        icon: 'warning',
+        color: '#ffffff',
+        width: 300,
+        heightAuto: true,
+        background: '#000',
+        showCancelButton: true,
+        confirmButtonColor: '#000',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.cartService.deleteItem(item_id).subscribe({
+            next: (res) => {
+              Swal.fire({
+                title: 'Item Deleted',
+                text: res.message,
+                icon: 'success',
+                color: '#ffffff',
+                width: 300,
+                heightAuto: true,
+                background: '#000',
+                showConfirmButton: true,
+                confirmButtonColor: '#000',
+              });
+            },
         error: (error) => {
           console.error('Error deleting product: ', error);
-          alert('Error deleting product, please try again');
+          Swal.fire({
+            title: "Product Added",
+            text: 'Error deleting product ',
+            color: '#ffffff',
+            width: 300,
+            heightAuto:true,
+            imageUrl: "https://img.freepik.com/foto-gratis/ilustracion-calzado-deportivo-sobre-fondo-azul-generado-ia_188544-19603.jpg?w=1380&t=st=1720619846~exp=1720620446~hmac=c3c9abe9bd869c4c34ba10f563ad4725250fe2a24c598df070a98b49adff834d",
+            imageWidth: 250,
+            imageHeight: 150,
+            imageAlt: "Custom image",
+            background: '#000',
+            showConfirmButton: true,
+            confirmButtonColor: '#000',
+            
+            
+          });
         },
       });
     } else {
       console.error('The item ID is undefined');
     }
-  }
-  }
+  })
+  }}
 
   confirmPurchase(event: Event) {
     event.preventDefault(); 
@@ -116,7 +154,17 @@ export class CartDetailComponent implements OnInit {
       this.stripeService.createPaymentMethod().subscribe({
         next: (paymentMethod) => {
           if (!paymentMethod || !paymentMethod.id) {
-            alert('Error creating payment method. Please try again.');
+            Swal.fire({
+              title: "Error creating payment method. Please try again.",
+              color: '#ffffff',
+              icon: 'error',
+              width: 300,
+              background: '#000',
+              showConfirmButton: true,
+              confirmButtonColor: '#000',
+              
+            });
+            
             return;
           }
 
@@ -125,14 +173,32 @@ export class CartDetailComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error creating payment method:', error);
-          alert('Error creating payment method. Please try again.');
+          Swal.fire({
+            title: "Error creating payment method. Please try again.",
+            color: '#ffffff',
+            icon: 'error',
+            width: 300,
+            background: '#000',
+            showConfirmButton: true,
+            confirmButtonColor: '#000',
+            
+          });
         }
       });
     } else if (this.PaymentMode === 'Cash') {
    
       this.processPurchase(this.Payment_method_id);
     } else {
-      alert('Payment method not supported.');
+      Swal.fire({
+        title: "Payment method not supported.",
+        color: '#ffffff',
+        icon: 'error',
+        width: 300,
+        background: '#000',
+        showConfirmButton: true,
+        confirmButtonColor: '#000',
+        
+      });
     }
   }
 
@@ -140,17 +206,44 @@ export class CartDetailComponent implements OnInit {
     this.purchaseService.confirmPurchase(paymentMethodId).pipe(
       tap(response => {
         console.log('Purchase completed:', response);
-        alert('Purchase completed successfully.');
+        Swal.fire({
+          title: "Purchase completed successfully.",
+          color: '#ffffff',
+          icon: 'success',
+          width: 300,
+          background: '#000',
+          showConfirmButton: true,
+          confirmButtonColor: '#000',
+          
+        });
         this.purchase = response;
         this.purchaseConfirmed = true;
         this.confirmedTotal = this.total;
       }),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 400 && error.error && error.error.error) {
-          alert(error.error.error);
+          Swal.fire({
+            title: error.error.error,
+            color: '#ffffff',
+            icon: 'error',
+            width: 300,
+            background: '#000',
+            showConfirmButton: true,
+            confirmButtonColor: '#000',
+            
+          });
         } else {
           console.error('Error processing the purchase:', error);
-          alert('An error occurred while processing the purchase, please try again.');
+          Swal.fire({
+            title: "An error occurred while processing the purchase, please try again.",
+            color: '#ffffff',
+            icon: 'error',
+            width: 300,
+            background: '#000',
+            showConfirmButton: true,
+            confirmButtonColor: '#000',
+            
+          });
         }
         return of(null); 
       })

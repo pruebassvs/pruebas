@@ -20,13 +20,13 @@ export class CartService {
   public total$ = this.totalSubject.asObservable();
 
   constructor(private http: HttpClient, private loaderService: LoaderService) {
-    this.loadInitialCart();
-  }
-
-  private loadInitialCart(): void {
-    this.getCart().subscribe();
     
   }
+
+  public loadInitialCart(): void {
+    this.getCart().subscribe();
+  }
+
   private updateTotal(cart: Cart): void {
     const total = cart.items.reduce((acc, item) => acc + item.quantity * item.product.price, 0);
     this.totalSubject.next(total);

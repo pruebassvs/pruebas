@@ -18,6 +18,7 @@ import { PasswordResetComponent } from './components/pages/password-reset/passwo
 import { PasswordResetConfirmComponent } from './components/pages/password-reset-confirm/password-reset-confirm.component';
 import { MesaggingAdminComponent } from './components/component/mesagging-admin/mesagging-admin.component';
 import { MesaggingUserComponent } from './components/component/mesagging-user/mesagging-user.component';
+import { BrandProductListComponent } from './components/pages/brand-product-list/brand-product-list.component';
 
 
 export const routes: Routes = [
@@ -41,6 +42,7 @@ export const routes: Routes = [
    
       ]},
     {path:"products", component: ProductListComponent},
+    { path: "products/brand/:brandName", component: BrandProductListComponent },
     {path:"cart", component: CartDetailComponent},
     {path:"contact-page", component: ContactPageComponent},
     { path: 'products/:id', component: ProductDetailComponent },

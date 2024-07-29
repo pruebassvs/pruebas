@@ -6,6 +6,7 @@ import { ReactiveFormsModule,
   Validators,
   FormsModule } from '@angular/forms';
 import { DeliveryService } from '../../../services/delivery/delivery.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-deliveries',
@@ -49,10 +50,30 @@ updateDeliveryStatus(purchaseId: number, statusDescription: DeliveryStatus): voi
   this.deliveryService.updateDeliveryStatus(requestData).subscribe( {
     next: (response:DeliveryStatusResponse) => {
       console.log('Delivery status updated successfully:', response);
+      Swal.fire({
+        title: "Delivery status updated successfully:",
+        color: '#ffffff',
+        icon: 'success',
+        width: 300,
+        background: '#000',
+        showConfirmButton: true,
+        confirmButtonColor: '#000',
+        
+      });
       this.loadDeliveries();  
     },
     error: (err) => {
       console.error('Error updating delivery status:', err);
+      Swal.fire({
+        title: "Error updating delivery status:",
+        color: '#ffffff',
+        icon: 'error',
+        width: 300,
+        background: '#000',
+        showConfirmButton: true,
+        confirmButtonColor: '#000',
+        
+      });
     }
   });
   

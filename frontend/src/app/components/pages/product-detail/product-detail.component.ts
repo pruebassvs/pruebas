@@ -8,6 +8,7 @@ import { CartService } from '../../../services/cart/cart.service';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../services/auth-service/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-product-detail',
@@ -63,12 +64,40 @@ addItemCart(product_id?: number, quantity?:number): void {
   if (product_id !== undefined) {
     this.cartService.addItem(product_id, this.quantity).subscribe({
       next: (res) => {
-        alert('Item Added.');
+        Swal.fire({
+          title: "Item Added",
+          text: res.message,
+          color: '#ffffff',
+          width: 300,
+          heightAuto:true,
+          imageUrl: this.product.image,
+          imageWidth: 200,
+          imageHeight: 100,
+          imageAlt: "Custom image", 
+          background: '#000',
+          showConfirmButton: true,
+          confirmButtonColor: '#000',
+          
+        });
         console.log(res, product_id, this.quantity);
       },
       error: (error: HttpErrorResponse) => {
         if (error.status === 400 && error.error && error.error.error) {
-          alert(error.error.error +" Stock: " + this.product.stock);
+          Swal.fire({
+            title: "Error adding product",
+            text: error.error.error,
+            color: '#ffffff',
+            width: 300,
+            heightAuto:true,
+            imageUrl: this.product.image,
+            imageWidth: 200,
+            imageHeight: 100,
+            imageAlt: "Custom image",
+            background: '#000',
+            showConfirmButton: true,
+            confirmButtonColor: '#000',
+            
+          });
         } else {
           console.error('Error Adding product:', error);
           alert(
