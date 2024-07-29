@@ -393,6 +393,7 @@ class PaymentModeTypeViewSet(viewsets.ModelViewSet):
     
 class SendEmailView(APIView):
     permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = EmailSerializer(data=request.data)
         if serializer.is_valid():
@@ -401,102 +402,120 @@ class SendEmailView(APIView):
             to_email = serializer.validated_data['to_email']
             
             email_service = EmailService(subject, message, to_email)
-            result = email_service.send_email()
-            
-            if result['status'] == 'success':
-                return Response({'status': 'success'}, status=status.HTTP_200_OK)
-            else:
-                return Response({'status': 'error', 'message': result.get('message')}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            try:
+                result = email_service.send_email()
+                if result['status'] == 'success':
+                    return Response({'status': 'success'}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'status': 'error', 'message': result.get('message')}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except Exception as e:
+                return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 class PasswordResetRequestView(APIView):
     permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = PasswordResetRequestSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data['email']
             user = CustomUser.objects.filter(email=email).first()
             if user:
-                token = default_token_generator.make_token(user)
-                uid = urlsafe_base64_encode(force_bytes(user.pk))
-                reset_link = f"http://localhost:4200/reset-password/{uid}/{token}/"
-                message = f"Click the link to reset your password: {reset_link}"
-                
-                email_message = EmailMessage(
-                    'Password Reset Request',
-                    message,
-                    'your-email@example.com',
-                    [email]
-                )
-                email_message.send()
+                try:
+                    token = default_token_generator.make_token(user)
+                    uid = urlsafe_base64_encode(force_bytes(user.pk))
+                    reset_link = f"http://localhost:4200/reset-password/{uid}/{token}/"
+                    message = f"Click the link to reset your password: {reset_link}"
+                    
+                    email_message = EmailMessage(
+                        'Password Reset Request',
+                        message,
+                        'Full@reset.com',
+                        [email]
+                    )
+                    email_message.send()
+                except Exception as e:
+                    return Response({'status': 'error', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             return Response({'status': 'success', 'message': 'If an account with that email exists, a reset link has been sent.'}, status=status.HTTP_200_OK)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class PasswordResetConfirmView(APIView):
     permission_classes = [AllowAny]
+
     def post(self, request, uid, token):
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+        if serializer.is_valid():
+            new_password = serializer.validated_data.get('new_password')
+            confirm_password = serializer.validated_data.get('confirm_password')
+
+            if not uid or not token:
+                return Response({'error': 'Invalid request'}, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                uid = urlsafe_base64_decode(uid).decode()
+                user = CustomUser.objects.get(pk=uid)
+            except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+                return Response({'error': 'Invalid user'}, status=status.HTTP_400_BAD_REQUEST)
+
+            if not default_token_generator.check_token(user, token):
+                return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
+            if new_password != confirm_password:
+                return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                user.set_password(new_password)
+                user.save()
+            except Exception as e:
+                return Response({'error': 'Error resetting password', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            return Response({'success': 'Password has been reset'}, status=status.HTTP_200_OK)
         
-        new_password = request.data.get('new_password')
-        confirm_password = request.data.get('confirm_password')
-
-        if not uid or not token:
-            return Response({'error': 'Invalid request'}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            uid = urlsafe_base64_decode(uid).decode()
-            user = CustomUser.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
-            return Response({'error': 'Invalid user'}, status=status.HTTP_400_BAD_REQUEST)
-
-        if not default_token_generator.check_token(user, token):
-            return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
-
-        if new_password != confirm_password:
-            return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
-
-        user.set_password(new_password)
-        user.save()
-
-        return Response({'success': 'Password has been reset'}, status=status.HTTP_200_OK)
-    
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
+
     def get_permissions(self):
         if self.request.method in ['POST', 'GET']:
             self.permission_classes = [IsUserOrAdmin]
         elif self.request.method in ['PUT', 'PATCH', 'DELETE']:
-            self.permission_classes = [IsConversationOwnerOrAdmin] 
-        else:  
+            self.permission_classes = [IsConversationOwnerOrAdmin]
+        else:
             self.permission_classes = [IsAdminOnly]
         return [permission() for permission in self.permission_classes]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    @action(detail=True, methods=['post'] ,permission_classes = [IsAdminOnly])
+    @action(detail=True, methods=['post'], permission_classes=[IsAdminOnly])
     def close(self, request, pk=None):
         conversation = self.get_object()
-        if conversation.closed_at:
-            return Response({"detail": "Conversation already closed."}, status=400)
-        conversation.closed_at = datetime.now(timezone.utc)  
-        conversation.open = False
-        conversation.save()
-        serializer = self.get_serializer(conversation)
-        return Response(serializer.data)
+        try:
+            if conversation.closed_at:
+                return Response({"detail": "Conversation already closed."}, status=status.HTTP_400_BAD_REQUEST)
+            conversation.closed_at = datetime.now(timezone.utc)
+            conversation.open = False
+            conversation.save()
+            serializer = self.get_serializer(conversation)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'Error closing conversation', 'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
+
     def get_permissions(self):
         if self.request.method in ['POST', 'GET']:
             self.permission_classes = [IsUserOrAdmin]
         elif self.request.method in ['PUT', 'PATCH', 'DELETE']:
             self.permission_classes = [IsAdminOnly]
-        else: 
+        else:
             self.permission_classes = [IsAdminOrReadOnly]
         return [permission() for permission in self.permission_classes]
 
@@ -506,6 +525,6 @@ class MessageViewSet(viewsets.ModelViewSet):
         if conversation_id is not None:
             queryset = queryset.filter(conversation_id=conversation_id)
         return queryset
-    
+
     def perform_create(self, serializer):
         serializer.save(sender=self.request.user)

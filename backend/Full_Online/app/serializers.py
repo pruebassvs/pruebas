@@ -207,9 +207,10 @@ class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
 class PasswordResetConfirmSerializer(serializers.Serializer):
-    uid = serializers.CharField()
-    token = serializers.CharField()
+
     new_password = serializers.CharField()
+    confirm_password = serializers.CharField()
+
     
 class MessageSerializer(serializers.ModelSerializer):
     sender = UserSerializer(read_only=True)  # Representa al usuario que envió el mensaje

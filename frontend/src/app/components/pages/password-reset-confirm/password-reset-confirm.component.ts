@@ -62,7 +62,7 @@ export class PasswordResetConfirmComponent implements OnInit {
       const { new_password, confirm_password } = this.form.value;
       this.authService.confirmPasswordReset(this.uid, this.token, new_password, confirm_password).subscribe({
         next: (res) => {
-          console.log(res.message ) ;
+          console.log(res.success) ;
           alert('Password has been reset successfully.')
           this.router.navigate(['/login']);
         },
