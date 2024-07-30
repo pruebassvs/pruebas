@@ -1,6 +1,9 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export function notEqualPasswordValidator(passwordField: string, confirmPasswordField: string): ValidatorFn {
+export function notEqualPasswordValidator(
+  passwordField: string,
+  confirmPasswordField: string
+): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const form = control as any;
     const pass1 = form.get(passwordField);

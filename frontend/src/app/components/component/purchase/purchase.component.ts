@@ -9,9 +9,10 @@ import { ShoeDividerComponent } from '../shoe-divider/shoe-divider.component';
   standalone: true,
   imports: [CommonModule, ShoeDividerComponent],
   templateUrl: './purchase.component.html',
-  styleUrl: './purchase.component.css'
+  styleUrl: './purchase.component.css',
 })
 export class PurchaseComponent {
-  @Input() purchase: PurchaseConfirmationResponse = {} as PurchaseConfirmationResponse;
-  @Input() confirmedTotal!: number
+  @Input() purchase: PurchaseConfirmationResponse =
+    {} as PurchaseConfirmationResponse;
+  @Input() confirmedTotal!: number;
 }

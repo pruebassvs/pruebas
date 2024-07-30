@@ -5,8 +5,6 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './shoe-divider.component.html',
-  styleUrl: './shoe-divider.component.css'
+  styleUrl: './shoe-divider.component.css',
 })
-export class ShoeDividerComponent {
-
-}
+export class ShoeDividerComponent {}

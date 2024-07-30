@@ -9,25 +9,21 @@ import { Product } from '../../../types/types';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './carousel.component.html',
-  styleUrl: './carousel.component.css'
+  styleUrl: './carousel.component.css',
 })
-export class CarouselComponent implements OnInit  {
+export class CarouselComponent implements OnInit {
   @ViewChild('container') container!: ElementRef;
-  products:Product[] = [];
+  products: Product[] = [];
 
-  
-  constructor(private productService: ProductService) {
-
-  }
+  constructor(private productService: ProductService) {}
   ngOnInit(): void {
     this.productService.getProducts().subscribe({
       next: (prods) => (this.products = prods),
       error: (error) => console.error(error),
-      
     });
   }
   slideLeft() {
-    this.container.nativeElement.scrollLeft -= 250; 
+    this.container.nativeElement.scrollLeft -= 250;
   }
 
   slideRight() {

@@ -6,16 +6,15 @@ import { LoaderService } from '../../../services/loader/loader.service';
   standalone: true,
   imports: [],
   templateUrl: './loader.component.html',
-  styleUrl: './loader.component.css'
+  styleUrl: './loader.component.css',
 })
 export class LoaderComponent implements OnInit {
-isLoading =false
+  isLoading = false;
 
-constructor(private loaderService:LoaderService){}
-ngOnInit(): void {
-  this.loaderService.loading$.subscribe(
-    value=>{this.isLoading=value}
-  )
+  constructor(private loaderService: LoaderService) {}
+  ngOnInit(): void {
+    this.loaderService.loading$.subscribe((value) => {
+      this.isLoading = value;
+    });
+  }
 }
-}
- 

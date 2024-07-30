@@ -5,16 +5,15 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs';
 import { User } from '../../types/types';
 import { LoaderService } from '../loader/loader.service';
-import { tap , finalize} from 'rxjs';
+import { tap, finalize } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
+  constructor(private http: HttpClient, private loaderService: LoaderService) {}
 
-  constructor(private http: HttpClient, private loaderService: LoaderService) { }
-
-  getUser():Observable<User>{
+  getUser(): Observable<User> {
     this.loaderService.show();
     return this.http.get<User>(ENDPOINT + 'user/').pipe(
       catchError((error) => {
@@ -34,6 +33,5 @@ export class UserService {
       }),
       finalize(() => this.loaderService.hide())
     );
+  }
 }
-}
-

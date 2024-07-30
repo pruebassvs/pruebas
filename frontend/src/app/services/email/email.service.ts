@@ -7,22 +7,22 @@ import { finalize } from 'rxjs';
 import { ENDPOINT } from '../../utils/utils';
 import { EmailData, EmailResponse } from '../../types/types';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class EmailService { 
-
-  constructor(private http: HttpClient, private loaderService: LoaderService) { }
+export class EmailService {
+  constructor(private http: HttpClient, private loaderService: LoaderService) {}
 
   sendEmail(emailData: EmailData): Observable<EmailResponse> {
     this.loaderService.show();
-    return this.http.post<EmailResponse>(`${ENDPOINT}send_mail/`, emailData).pipe(
-      catchError((error) => {
-        console.error('Error occurred while sending Email :', error);
-        throw error;
-      }),
-      finalize(() => this.loaderService.hide())
-    );
-  }   
+    return this.http
+      .post<EmailResponse>(`${ENDPOINT}send_mail/`, emailData)
+      .pipe(
+        catchError((error) => {
+          console.error('Error occurred while sending Email :', error);
+          throw error;
+        }),
+        finalize(() => this.loaderService.hide())
+      );
+  }
 }

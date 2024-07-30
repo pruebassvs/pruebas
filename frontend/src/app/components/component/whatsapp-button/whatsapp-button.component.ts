@@ -5,8 +5,6 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './whatsapp-button.component.html',
-  styleUrl: './whatsapp-button.component.css'
+  styleUrl: './whatsapp-button.component.css',
 })
-export class WhatsappButtonComponent {
-
-}
+export class WhatsappButtonComponent {}

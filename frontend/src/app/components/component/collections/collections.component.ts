@@ -6,8 +6,6 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './collections.component.html',
-  styleUrl: './collections.component.css'
+  styleUrl: './collections.component.css',
 })
-export class CollectionsComponent {
-
-}
+export class CollectionsComponent {}

@@ -4,7 +4,7 @@ import {
   FormBuilder,
   FormGroup,
   Validators,
-} from '@angular/forms'; 
+} from '@angular/forms';
 import { AuthService } from '../../../services/auth-service/auth.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -14,25 +14,26 @@ import Swal from 'sweetalert2';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './password-reset.component.html',
-  styleUrl: './password-reset.component.css'
+  styleUrl: './password-reset.component.css',
 })
 export class PasswordResetComponent {
-  
   form!: FormGroup;
- 
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router,) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.form = this.fb.group({
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]],
     });
   }
   get email() {
     return this.form.get('email');
   }
 
-
-  onSubmit(event:Event): void {
-    event.preventDefault()
+  onSubmit(event: Event): void {
+    event.preventDefault();
     if (this.form.valid) {
       const email = this.form.value.email;
       this.authService.requestPasswordReset(email).subscribe({
@@ -59,10 +60,9 @@ export class PasswordResetComponent {
             background: '#000',
             showConfirmButton: true,
             confirmButtonColor: '#000',
-            
           });
           console.error(err);
-        }
+        },
       });
     }
   }

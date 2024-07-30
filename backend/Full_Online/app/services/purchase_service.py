@@ -3,7 +3,6 @@ from ..utils.utils import generate_invoice_number
 from django.db.models import Sum, F
 
 
-
 class PurchaseService:
     @staticmethod
     def create_purchase(user, invoice_number, payment_type_id, total):
@@ -11,17 +10,14 @@ class PurchaseService:
             user=user,
             invoice_number=invoice_number,
             payment_type_id=payment_type_id,
-            total=total
+            total=total,
         )
         return purchase
 
     @staticmethod
     def create_purchase_detail(purchase, product, quantity, price):
         purchase_detail = PurchaseDetail.objects.create(
-            purchase=purchase,
-            product=product,
-            quantity=quantity,
-            price=price
+            purchase=purchase, product=product, quantity=quantity, price=price
         )
         return purchase_detail
 
@@ -29,17 +25,19 @@ class PurchaseService:
     def confirm_purchase(user, cart, payment_method_id):
         try:
             if cart.items.count() == 0:
-                raise ValueError("There are no products in the cart to proceed with the purchase.")
-            
+                raise ValueError(
+                    "There are no products in the cart to proceed with the purchase."
+                )
+
             total = cart.items.aggregate(
                 total=Sum(F("product__price") * F("quantity"))
             )["total"]
-            
+
             for item in cart.items.all():
-                    if item.product.stock < item.quantity:
-                        raise ValueError(
-                            f"Insufficient stock for {item.product.model}, current stock: {item.product.stock} units."
-                        )
+                if item.product.stock < item.quantity:
+                    raise ValueError(
+                        f"Insufficient stock for {item.product.model}, current stock: {item.product.stock} units."
+                    )
 
             purchase = PurchaseService.create_purchase(
                 user=user,
@@ -47,7 +45,7 @@ class PurchaseService:
                 payment_type_id=payment_method_id,
                 total=total,
             )
-            
+
             purchase_details = []
             for item in cart.items.all():
                 purchase_detail = PurchaseService.create_purchase_detail(
@@ -59,17 +57,12 @@ class PurchaseService:
                 purchase_details.append(purchase_detail)
 
             for item in cart.items.all():
-                    item.product.stock -= item.quantity
-                    item.product.save()
-        
-            
+                item.product.stock -= item.quantity
+                item.product.save()
+
             cart.items.all().delete()
-            
-            
 
             return purchase, purchase_details
-        
-            
 
         except Exception as e:
             raise e

@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './auth.guard';
+import { adminGuard } from './admin.guard';
 import { LandingPageComponent } from './components/pages/landing-page/landing-page.component';
 import { LoginPageComponent } from './components/pages/login-page/login-page.component';
 import { RegisterPageComponent } from './components/pages/register-page/register-page.component';
@@ -21,32 +23,42 @@ import { MesaggingUserComponent } from './components/component/mesagging-user/me
 import { BrandProductListComponent } from './components/pages/brand-product-list/brand-product-list.component';
 import { RandomProductComponent } from './components/pages/random-product/random-product.component';
 
-
 export const routes: Routes = [
-    { path: '', redirectTo: '/home', pathMatch: 'full' },
-    {path:"home", component:LandingPageComponent},
-    {path:"login", component:LoginPageComponent},
-    {path:"register", component: RegisterPageComponent},
-    {path:"reset-password", component: PasswordResetComponent},
-    {path:'reset-password/:uid/:token', component: PasswordResetConfirmComponent},
-    {path:"user", component: CustomerDashboardComponent, children: [
-        { path: 'purchase-history', component: PurchaseHistoryComponent },
-        { path: 'user-update', component: UserUpdateComponent},
-        { path: 'mesagge-user', component: MesaggingUserComponent},
-       
-      ]},
-      {path:"admin", component: AdminDashboardComponent, children: [
-        { path: 'deliveries', component: DeliveriesComponent },
-        { path: 'stock-admin', component: StockAdminComponent},
-        { path: 'new-product', component: NewProductComponent},
-        { path: 'mesagge-admin', component: MesaggingAdminComponent},
-   
-      ]},
-    {path:"products", component: ProductListComponent},
-    {path:"random-product", component: RandomProductComponent},
-    { path: "products/brand/:brandName", component: BrandProductListComponent },
-    {path:"cart", component: CartDetailComponent},
-    {path:"contact-page", component: ContactPageComponent},
-    { path: 'products/:id', component: ProductDetailComponent },
-    { path: '**', component: NotFoundComponent },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'home', component: LandingPageComponent },
+  { path: 'login', component: LoginPageComponent },
+  { path: 'register', component: RegisterPageComponent },
+  { path: 'reset-password', component: PasswordResetComponent },
+  {
+    path: 'reset-password/:uid/:token',
+    component: PasswordResetConfirmComponent,
+  },
+  {
+    path: 'user',
+    component: CustomerDashboardComponent,
+    canActivate: [authGuard],
+    children: [
+      { path: 'purchase-history', component: PurchaseHistoryComponent },
+      { path: 'user-update', component: UserUpdateComponent },
+      { path: 'mesagge-user', component: MesaggingUserComponent },
+    ], 
+  },
+  {
+    path: 'admin',
+    component: AdminDashboardComponent,
+    canActivate: [adminGuard],
+    children: [
+      { path: 'deliveries', component: DeliveriesComponent },
+      { path: 'stock-admin', component: StockAdminComponent },
+      { path: 'new-product', component: NewProductComponent },
+      { path: 'mesagge-admin', component: MesaggingAdminComponent },
+    ], 
+  },
+  { path: 'products', component: ProductListComponent },
+  { path: 'random-product', component: RandomProductComponent },
+  { path: 'products/brand/:brandName', component: BrandProductListComponent },
+  { path: 'cart', component: CartDetailComponent , canActivate: [authGuard]},
+  { path: 'contact-page', component: ContactPageComponent  },
+  { path: 'products/:id', component: ProductDetailComponent },
+  { path: '**', component: NotFoundComponent },
 ];

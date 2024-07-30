@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, OrderByPipe],
   templateUrl: './mesagging-admin.component.html',
-  styleUrl: './mesagging-admin.component.css'
+  styleUrl: './mesagging-admin.component.css',
 })
 export class MesaggingAdminComponent implements OnInit {
   conversations: Conversation[] = [];
@@ -25,7 +25,7 @@ export class MesaggingAdminComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.messageForm = this.fb.group({
-      content: ['', Validators.required]
+      content: ['', Validators.required],
     });
   }
 
@@ -40,7 +40,7 @@ export class MesaggingAdminComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading conversations', error);
-      }
+      },
     });
   }
 
@@ -49,23 +49,25 @@ export class MesaggingAdminComponent implements OnInit {
     this.loadMessages(conversation.id);
   }
 
-  loadMessages(conversationId: number): void {{
-    this.messagingService.getMessages(conversationId).subscribe({
-      next :(data: Message[]) => {
-        this.messages = data;
-      },
-      error: (error) => {
-        console.error('Error loading messages', error);
-      }
-  })
-  }}
+  loadMessages(conversationId: number): void {
+    {
+      this.messagingService.getMessages(conversationId).subscribe({
+        next: (data: Message[]) => {
+          this.messages = data;
+        },
+        error: (error) => {
+          console.error('Error loading messages', error);
+        },
+      });
+    }
+  }
 
-  sendMessage(event:Event): void {
+  sendMessage(event: Event): void {
     if (this.selectedConversation) {
       const content = this.messageForm.get('content')?.value;
       const newMessage: NewMessage = {
         content,
-        conversation: this.selectedConversation.id
+        conversation: this.selectedConversation.id,
       };
       this.messagingService.createMessage(newMessage).subscribe({
         next: (message: Message) => {
@@ -74,7 +76,7 @@ export class MesaggingAdminComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error sending message', error);
-        }
+        },
       });
     }
   }
@@ -87,14 +89,14 @@ export class MesaggingAdminComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error closing conversation', error);
-      }
+      },
     });
   }
 
   deleteConversation(conversationId: number): void {
     Swal.fire({
       title: 'Are you sure?',
-      text: 'You won\'t be able to revert this!',
+      text: "You won't be able to revert this!",
       icon: 'warning',
       color: '#ffffff',
       width: 300,
@@ -104,7 +106,7 @@ export class MesaggingAdminComponent implements OnInit {
       confirmButtonColor: '#000',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, cancel!'
+      cancelButtonText: 'No, cancel!',
     }).then((result) => {
       if (result.isConfirmed) {
         this.messagingService.deleteConversation(conversationId).subscribe({
@@ -120,8 +122,8 @@ export class MesaggingAdminComponent implements OnInit {
               showConfirmButton: true,
               confirmButtonColor: '#000',
             });
-            this.loadConversations(); 
-            this.selectedConversation = null; 
+            this.loadConversations();
+            this.selectedConversation = null;
           },
           error: (error) => {
             Swal.fire({
@@ -132,10 +134,10 @@ export class MesaggingAdminComponent implements OnInit {
               background: '#000',
               confirmButtonColor: '#000',
               width: 300,
-              heightAuto: true
+              heightAuto: true,
             });
             console.error('Error deleting conversation', error);
-          }
+          },
         });
       }
     });

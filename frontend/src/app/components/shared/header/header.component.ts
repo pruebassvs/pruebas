@@ -1,4 +1,4 @@
-import { Component , OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { LogoutComponent } from '../../component/logout/logout.component';
@@ -9,26 +9,31 @@ import { ShoeDividerComponent } from '../../component/shoe-divider/shoe-divider.
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, LogoutComponent, CartPopupComponent, ShoeDividerComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    LogoutComponent,
+    CartPopupComponent,
+    ShoeDividerComponent,
+  ],
   templateUrl: './header.component.html',
-  
 })
-export class HeaderComponent implements OnInit{
+export class HeaderComponent implements OnInit {
   isMenuOpen = false;
   isBannerVisible = true;
-  isLogged=false;
+  isLogged = false;
   isCartOpen = false;
-  isAdmin = false
+  isAdmin = false;
 
-  constructor(private authService:AuthService){}
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-      this.authService.isLogged$.subscribe(
-        value=>{this.isLogged=value}
-      )
-      this.authService.isAdmin$.subscribe(
-        value=>{this.isAdmin=value}
-      )
+    this.authService.isLogged$.subscribe((value) => {
+      this.isLogged = value;
+    });
+    this.authService.isAdmin$.subscribe((value) => {
+      this.isAdmin = value;
+    });
   }
   closeBanner() {
     this.isBannerVisible = false;
@@ -42,6 +47,4 @@ export class HeaderComponent implements OnInit{
   toggleCart() {
     this.isCartOpen = !this.isCartOpen;
   }
-
-
 }
