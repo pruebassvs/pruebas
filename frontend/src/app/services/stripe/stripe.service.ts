@@ -8,7 +8,7 @@ import {
 } from '@stripe/stripe-js';
 import { from, Observable, of } from 'rxjs';
 import { switchMap, tap, catchError } from 'rxjs/operators';
-import { stripePublicKey } from '../../utils/utils';
+import { environment } from '../../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +19,7 @@ export class StripeService {
   private cardElement: StripeCardElement | null = null;
 
   initializeStripe(): Observable<void> {
-    return from(loadStripe(stripePublicKey)).pipe(
+    return from(loadStripe(environment.stripePublicKey)).pipe(
       switchMap((stripe: Stripe | null) => {
         if (stripe) {
           this.stripe = stripe;
