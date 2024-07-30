@@ -154,7 +154,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 class CartViewSet(viewsets.ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
-    permission_classes = [IsAuthenticated]
+    
     
     @action(detail=False, methods=["post"])
     def create_cart(self, request):
@@ -268,7 +268,7 @@ class PurchaseViewSet(viewsets.ModelViewSet):
         except PaymentModeType.DoesNotExist:
             return Response({'error': 'Invalid payment method ID'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if payment_method.description == "Stripe":  # Assuming `description` is the field to check
+        if payment_method.description == "Stripe":  
             try:
                 with transaction.atomic():
                     amount_in_cents = int(total_amount * 100)
@@ -335,7 +335,7 @@ class ChangeDeliveryStatusAPIView(APIView):
                 return Response({'error': 'status_description is required'}, status=status.HTTP_400_BAD_REQUEST)
             
             if status_description not in dict(DeliveryStatusType.STATUS_CHOICES):
-                return Response({'error': 'Invalid status description,Choices avaibles P,T,C'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Invalid status description,Choices avaibles Pending,Transit,Completed'}, status=status.HTTP_400_BAD_REQUEST)
             
             purchase = Purchase.objects.get(id=purchase_id)
             updated_delivery, delivery_history = DeliveryService.update_delivery_status_with_history(purchase, status_description)

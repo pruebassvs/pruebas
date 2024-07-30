@@ -62,22 +62,22 @@ export class BrandProductListComponent implements OnInit {
   
   private loadProductsForBrand(): void {
     if (this.brandName) {
-      const brand = this.brands.find(b => b.description === this.brandName); // Asegúrate de usar el campo correcto para comparar
+      const brand = this.brands.find(b => b.description === this.brandName); 
   
       if (brand) {
         this.productService.getProducts({ brand: brand.id }).subscribe({
           next: (products) => {
             this.products = products;
-            // Oculta el estado de carga o realiza cualquier otra acción después de obtener los productos
+
           },
           error: (err) => {
             console.error(`Error loading products for brand ${this.brandName}`, err);
-            // Manejo de errores adicional, si es necesario
+         
           }
         });
       } else {
         console.error('Brand not found.');
-        // Manejo del caso en que no se encuentra la marca
+    
       }
     }
   }

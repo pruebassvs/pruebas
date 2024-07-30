@@ -180,9 +180,9 @@ class PurchaseDetail(models.Model):
 
 class DeliveryStatusType(models.Model):
     STATUS_CHOICES = [
-        ('P', 'Pending'),
-        ('T', 'In transit'),
-        ('C', 'Completed'),
+        ('Pending', 'Pending'),
+        ('Transit', 'In transit'),
+        ('Completed', 'Completed'),
     ]
     description = models.CharField(max_length=45, choices=STATUS_CHOICES)
     change_date = models.DateTimeField(auto_now_add=True)

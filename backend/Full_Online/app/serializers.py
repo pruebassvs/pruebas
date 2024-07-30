@@ -213,7 +213,7 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
 
     
 class MessageSerializer(serializers.ModelSerializer):
-    sender = UserSerializer(read_only=True)  # Representa al usuario que envió el mensaje
+    sender = UserSerializer(read_only=True)  
 
     class Meta:
         model = Message
@@ -228,8 +228,8 @@ class MessageSerializer(serializers.ModelSerializer):
         return data
 
 class ConversationSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)  # Representa al usuario asociado 
-    messages = MessageSerializer(many=True, read_only=True)  # Incluye detalles completos de los mensajes asociados
+    user = UserSerializer(read_only=True) 
+    messages = MessageSerializer(many=True, read_only=True)  
 
     class Meta:
         model = Conversation

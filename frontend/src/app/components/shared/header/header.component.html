@@ -1,40 +1,18 @@
-<nav class="w-full z-30 top-0 py-1">
-  <div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 px-6 py-3">
-
-    <label for="menu-toggle" class="cursor-pointer md:hidden block">
-      <svg class="fill-current text-gray-900" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
-        <title>menu</title>
-        <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
-      </svg>
-    </label>
-    
-    <input class="hidden" type="checkbox" id="menu-toggle" (click)="toggleMenu()" />
-    
-    <div class="hidden md:flex md:items-center md:w-auto w-full order-2 md:order-2" [ngClass]="{ 'block': isMenuOpen, 'hidden': !isMenuOpen }">
-      <nav>
-        <ul class="md:flex items-center justify-between text-xl font-bold text-black  pt-4 md:pt-0">
-          <li><a class=" text-sm inline-block no-underline hover:text-black hover:underline py-2 px-3" (click)="closeMenu()" [routerLink]="'/products/'">Shop</a></li>
-          <li><a class=" text-sm inline-block no-underline hover:text-black hover:underline py-2 px-3" (click)="closeMenu()" [routerLink]="'/contact-page'">Contact</a></li>
-          <li><a class=" text-sm inline-block no-underline hover:text-black hover:underline py-2 px-3" (click)="closeMenu()" [routerLink]="'/products/brand/Nike'">Nike</a></li>
-          <li><a class=" text-sm inline-block no-underline hover:text-black hover:underline py-2 px-3" (click)="closeMenu()" [routerLink]="'/products/brand/Adidas'">Adidas</a></li>
-          <li><a class=" text-sm inline-block no-underline hover:text-black hover:underline py-2 px-3" (click)="closeMenu()" [routerLink]="'/products/brand/Puma'">Puma</a></li>
-        </ul>
-      </nav>
-    </div>
-
-    <div class="order-1 flex items-center space-x-2 md:space-x-4">
-      <a class="flex items-center no-underline hover:no-underline font-bold text-gray-800" [routerLink]="'/home'">
-      
-        <img src="https://st3.depositphotos.com/1020091/12754/v/450/depositphotos_127542692-stock-illustration-tennis-sneaker-icon.jpg" 
-             alt="Zapatilla" 
-             class="h-12 w-12 md:h-16 md:w-16">
-        <p class="text-lg  md:text-xl lg:text-2xl font-bold font-serif italic text-black ml-2">
-          Full Store
-        </p>
-      </a>
-    </div>
+<nav class="w-full z-30 top-0 py-5">
+  <div class="flex items-center justify-between ml-5 mr-5 space-x-2 md:space-x-4 flex-col md:flex-row">
+    <a class="flex items-center no-underline hover:no-underline font-bold text-gray-800">
+      <img src="https://st3.depositphotos.com/1020091/12754/v/450/depositphotos_127542692-stock-illustration-tennis-sneaker-icon.jpg" 
+           alt="Zapatilla" 
+           class="h-12 w-12 md:h-16 md:w-16">
+      <p class="hidden md:block text-lg md:text-xl lg:text-2xl font-bold font-serif italic text-black ml-2 shadow-lg">
+        Full Store, We Move
+      </p>
+      <p class="md:hidden text-lg font-bold font-serif italic text-black mt-2 text-center">
+        Full Store, We Move
+      </p>
+    </a>
     @if (!isMenuOpen) {
-      <div class="order-2 md:order-3 flex items-center space-x-3 md:space-x-4">
+      <div class="order-2 md:order-3 flex items-center space-x-1 md:space-x-1">
 
       @if (isLogged) {<app-logout></app-logout>}
       @else {
@@ -82,17 +60,43 @@
     </div>
     
 }
+  </div>
+  
+  <app-shoe-divider></app-shoe-divider>
+  <div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 px-1 py-3">
+
+    <label for="menu-toggle" class="cursor-pointer md:hidden block">
+      <svg class="fill-current text-gray-900" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+        <title>menu</title>
+        <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
+      </svg>
+    </label>
+    
+    <input class="hidden" type="checkbox" id="menu-toggle" (click)="toggleMenu()" />
+    
+    <div class="hidden md:flex md:items-center md:w-auto w-full order-2 md:order-2" [ngClass]="{ 'block': isMenuOpen, 'hidden': !isMenuOpen }">
+      <nav>
+        <ul class="md:flex items-center justify-between text-xl font-bold text-black  pt-4 md:pt-0">
+          <li><a class=" text-lg inline-block no-underline hover:text-black hover:underline py-2 px-3" (click)="closeMenu()" [routerLink]="'/products/'">Shop</a></li>
+          <li><a class=" text-lg inline-block no-underline hover:text-black hover:underline py-2 px-3" (click)="closeMenu()" [routerLink]="'/contact-page'">Contact</a></li>
+          <li><a class=" text-lg inline-block no-underline hover:text-black hover:underline py-2 px-3" (click)="closeMenu()" [routerLink]="'/products/brand/Nike'">Nike</a></li>
+          <li><a class=" text-lg inline-block no-underline hover:text-black hover:underline py-2 px-3" (click)="closeMenu()" [routerLink]="'/products/brand/Adidas'">Adidas</a></li>
+          <li><a class=" text-lg inline-block no-underline hover:text-black hover:underline py-2 px-3" (click)="closeMenu()" [routerLink]="'/products/brand/Puma'">Puma</a></li>
+        </ul>
+      </nav>
+    </div>
+    
     
   </div>
  
 </nav>
 
-<app-shoe-divider></app-shoe-divider>
+
   
   @if (isBannerVisible) {<div class="flex items-center justify-between gap-4 bg-black px-4 py-3 text-white">
     <p class="text-sm font-medium">
       Love this shop ?
-      <a routerLink="/products" class="inline-block underline">Check out this new model!</a>
+      <a routerLink="/random-product" class="inline-block underline">Check out this new model!</a>
     </p>
   
     <button

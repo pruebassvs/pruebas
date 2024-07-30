@@ -19,6 +19,7 @@ import { PasswordResetConfirmComponent } from './components/pages/password-reset
 import { MesaggingAdminComponent } from './components/component/mesagging-admin/mesagging-admin.component';
 import { MesaggingUserComponent } from './components/component/mesagging-user/mesagging-user.component';
 import { BrandProductListComponent } from './components/pages/brand-product-list/brand-product-list.component';
+import { RandomProductComponent } from './components/pages/random-product/random-product.component';
 
 
 export const routes: Routes = [
@@ -42,6 +43,7 @@ export const routes: Routes = [
    
       ]},
     {path:"products", component: ProductListComponent},
+    {path:"random-product", component: RandomProductComponent},
     { path: "products/brand/:brandName", component: BrandProductListComponent },
     {path:"cart", component: CartDetailComponent},
     {path:"contact-page", component: ContactPageComponent},

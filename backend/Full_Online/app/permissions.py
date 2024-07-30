@@ -26,9 +26,9 @@ class IsUserOrAdmin(permissions.BasePermission):
 class IsConversationOwnerOrAdmin(permissions.BasePermission):
  
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:  # GET, HEAD, OPTIONS
+        if request.method in permissions.SAFE_METHODS: 
             return True
-        if request.user.is_staff:  # Admin can perform any action
+        if request.user.is_staff:  
             return True
-        return obj.user == request.user  # Only the owner can modify or delete
+        return obj.user == request.user  
     

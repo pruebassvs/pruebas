@@ -9,6 +9,7 @@ import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../../services/auth-service/auth.service';
 import { UserLogin } from '../../../types/types';
 import Swal from 'sweetalert2';
+import { CartService } from '../../../services/cart/cart.service';
 
 
 @Component({
@@ -24,7 +25,8 @@ export class LoginPageComponent {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private cartService: CartService
   ) {
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -49,10 +51,12 @@ export class LoginPageComponent {
         username: this.form.value.email,
         password: this.form.value.password,
       };
+      
 
         this.authService.login(logUser).subscribe({
           next: (res) => {
             if (res.token) {
+              this.cartService.loadInitialCart()
               Swal.fire({
                 title: "Welcome",
                 text: res.user.email,

@@ -7,6 +7,7 @@ import {
 } from '@angular/forms'; 
 import { AuthService } from '../../../services/auth-service/auth.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-password-reset',
@@ -36,13 +37,31 @@ export class PasswordResetComponent {
       const email = this.form.value.email;
       this.authService.requestPasswordReset(email).subscribe({
         next: (res) => {
-
-          alert('If an account with that email exists, a reset link has been sent.')
+          Swal.fire({
+            title: 'Your reset link has been sent.',
+            text: res.message,
+            icon: 'success',
+            color: '#ffffff',
+            width: 300,
+            heightAuto: true,
+            background: '#000',
+            showConfirmButton: true,
+            confirmButtonColor: '#000',
+          });
           this.router.navigate(['/home']);
         },
         error: (err) => {
+          Swal.fire({
+            title: "'There was an error sending the reset link.'",
+            color: '#ffffff',
+            icon: 'error',
+            width: 300,
+            background: '#000',
+            showConfirmButton: true,
+            confirmButtonColor: '#000',
+            
+          });
           console.error(err);
-          alert('There was an error sending the reset link.')
         }
       });
     }

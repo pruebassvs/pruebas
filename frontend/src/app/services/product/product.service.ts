@@ -54,8 +54,13 @@ export class ProductService{
       finalize(() => this.loaderService.hide())
     );
   }
-  public getRandomProductExcluding(currentProductId: number): Observable<Product> {
-    const params = new HttpParams().set('currentProductId', currentProductId.toString());
+  public getRandomProductExcluding(currentProductId?: number): Observable<Product> {
+    let params = new HttpParams();
+  
+    if (currentProductId !== undefined) {
+      params = params.set('currentProductId', currentProductId.toString());
+    }
+    
     return this.http.get<Product>(`${ENDPOINT}products/get_random_product_excluding_id/`, { params }).pipe(
       catchError((error) => {
         console.error('Error occurred while fetching random product:', error);

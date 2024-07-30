@@ -27,10 +27,10 @@ export class CarouselComponent implements OnInit  {
     });
   }
   slideLeft() {
-    this.container.nativeElement.scrollLeft -= 250; // Ajusta el valor según el ancho de tus imágenes
+    this.container.nativeElement.scrollLeft -= 250; 
   }
 
   slideRight() {
-    this.container.nativeElement.scrollLeft += 250; // Ajusta el valor según el ancho de tus imágenes
+    this.container.nativeElement.scrollLeft += 250;
   }
 }

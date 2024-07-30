@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CartItemComponent } from '../cart-item/cart-item.component';
+
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../../services/cart/cart.service';
 import { PurchaseService } from '../../../services/purchase/purchase.service';
@@ -18,7 +18,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-cart-detail',
   standalone: true,
-  imports: [CartItemComponent, RouterLink, PurchaseComponent, FormsModule, CommonModule],
+  imports: [ RouterLink, PurchaseComponent, FormsModule, CommonModule],
   templateUrl: './cart-detail.component.html',
   styleUrls: ['./cart-detail.component.css']
 })
@@ -43,7 +43,7 @@ export class CartDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Obtén los tipos de pago disponibles
+
     this.purchaseService.getPaymentMethodTypes().subscribe({
       next: (payments) => {
         this.PaymentMethodTypes = payments;
@@ -106,17 +106,17 @@ export class CartDetailComponent implements OnInit {
         if (result.isConfirmed) {
           this.cartService.deleteItem(item_id).subscribe({
             next: (res) => {
-              Swal.fire({
-                title: 'Item Deleted',
-                text: res.message,
-                icon: 'success',
-                color: '#ffffff',
-                width: 300,
-                heightAuto: true,
-                background: '#000',
-                showConfirmButton: true,
-                confirmButtonColor: '#000',
-              });
+                Swal.fire({
+                  title: 'Item Deleted',
+                  text: res.message,
+                  icon: 'success',
+                  color: '#ffffff',
+                  width: 300,
+                  heightAuto: true,
+                  background: '#000',
+                  showConfirmButton: true,
+                  confirmButtonColor: '#000',
+                });
             },
         error: (error) => {
           console.error('Error deleting product: ', error);
@@ -126,10 +126,7 @@ export class CartDetailComponent implements OnInit {
             color: '#ffffff',
             width: 300,
             heightAuto:true,
-            imageUrl: "https://img.freepik.com/foto-gratis/ilustracion-calzado-deportivo-sobre-fondo-azul-generado-ia_188544-19603.jpg?w=1380&t=st=1720619846~exp=1720620446~hmac=c3c9abe9bd869c4c34ba10f563ad4725250fe2a24c598df070a98b49adff834d",
-            imageWidth: 250,
-            imageHeight: 150,
-            imageAlt: "Custom image",
+            icon: 'error',
             background: '#000',
             showConfirmButton: true,
             confirmButtonColor: '#000',
@@ -146,9 +143,6 @@ export class CartDetailComponent implements OnInit {
 
   confirmPurchase(event: Event) {
     event.preventDefault(); 
-    console.log(this.PaymentMode)
-    console.log(this.PaymentMethodTypes)
-    console.log(this.Payment_method_id)
 
     if (this.PaymentMode === 'Stripe') {
       this.stripeService.createPaymentMethod().subscribe({

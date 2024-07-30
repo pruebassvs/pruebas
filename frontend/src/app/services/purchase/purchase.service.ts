@@ -20,7 +20,7 @@ export class PurchaseService {
   private userEmail: string | null = null; 
 
   constructor(private cartService:CartService, private http: HttpClient, private loaderService: LoaderService, private emailService: EmailService, private authService: AuthService){
-    // Suscribirse al observable de email del usuario
+
     this.authService.userEmail$.subscribe({
       next: (userEmail) => {
         if (userEmail) {

@@ -120,8 +120,8 @@ export class MesaggingAdminComponent implements OnInit {
               showConfirmButton: true,
               confirmButtonColor: '#000',
             });
-            this.loadConversations();  // Refresh the list of conversations
-            this.selectedConversation = null;  // Clear the selected conversation
+            this.loadConversations(); 
+            this.selectedConversation = null; 
           },
           error: (error) => {
             Swal.fire({
