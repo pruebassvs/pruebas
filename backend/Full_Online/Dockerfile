@@ -11,7 +11,7 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # Configura el directorio de trabajo
-WORKDIR /app
+WORKDIR /Full_Online
 
 # Copia el archivo de requisitos y instala las dependencias
 
