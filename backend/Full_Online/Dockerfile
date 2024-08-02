@@ -6,7 +6,7 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Copia los archivos del proyecto
-COPY Full_online/requirements.txt /app/
+COPY requirements.txt /app/
 
 
 # Instala las dependencias
