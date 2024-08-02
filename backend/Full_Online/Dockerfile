@@ -2,16 +2,17 @@
 FROM python:3.9-slim
 
 # Establece el directorio de trabajo
+
 WORKDIR /app
 
 # Copia los archivos del proyecto
-COPY requirements.txt /backend/
+COPY requirements.txt /app/
 
 
 # Instala las dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY Full_Online /backend /
+COPY . /app/
 
 # Expone el puerto que usarás
 EXPOSE 8000
