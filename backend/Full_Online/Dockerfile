@@ -6,10 +6,12 @@ WORKDIR /backend
 
 # Copia los archivos del proyecto
 COPY requirements.txt /backend/
-COPY . /Full_Online/
+
 
 # Instala las dependencias
 RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . /Full_Online/
 
 # Expone el puerto que usarás
 EXPOSE 8000
