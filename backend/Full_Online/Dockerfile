@@ -5,7 +5,7 @@ FROM python:3.9-slim
 WORKDIR /backend
 
 # Copia los archivos del proyecto
-COPY requirements.txt /app/
+COPY requirements.txt /backend/
 COPY . /Full_Online/
 
 # Instala las dependencias
