@@ -1,1 +1,1 @@
-web: gunicorn Full_Online.Full_Online.wsgi --log-file -
+web: gunicorn Full_Online.wsgi --log-file -
