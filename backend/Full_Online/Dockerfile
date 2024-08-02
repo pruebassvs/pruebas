@@ -6,13 +6,13 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Copia los archivos del proyecto
-COPY requirements.txt /app/
+COPY Full_online/requirements.txt /app/
 
 
 # Instala las dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /app/
+COPY Full_Online /app/
 
 # Expone el puerto que usarás
 EXPOSE 8000
