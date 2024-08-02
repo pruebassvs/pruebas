@@ -1,21 +1,21 @@
-# Usa una imagen base de Python
-FROM python:3.9-slim
+    # Usa una imagen base de Python
+    FROM python:3.9-slim
 
-# Establece el directorio de trabajo
+    # Establece el directorio de trabajo
 
-WORKDIR /app
+    WORKDIR /app
 
-# Copia los archivos del proyecto
-COPY Full_Online/requirements.txt /app/
+    # Copia los archivos del proyecto
+    COPY Full_Online/requirements.txt /app/
 
 
-# Instala las dependencias
-RUN pip install --no-cache-dir -r requirements.txt
+    # Instala las dependencias
+    RUN pip install --no-cache-dir -r requirements.txt
+    COPY Full_Online/Full_Online /app/Full_Online
+    COPY Full_Online/manage.py /app/
 
-COPY Full_Online /app/
+    # Expone el puerto que usarás
+    EXPOSE 8000
 
-# Expone el puerto que usarás
-EXPOSE 8000
-
-# Define el comando para iniciar el servidor
-CMD ["gunicorn", "Full_Online.wsgi:application", "--bind", "0.0.0.0:8000"]
+    # Define el comando para iniciar el servidor
+    CMD ["gunicorn", "Full_Online.wsgi:application", "--bind", "0.0.0.0:8000"]
