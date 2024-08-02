@@ -6,9 +6,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Instala dependencias del sistema necesarias para mysqlclient
 RUN apt-get update && \
     apt-get install -y \
-    gcc \
-    libmysqlclient-dev \
-    && rm -rf /var/lib/apt/lists/*
+    g  pkg-config \
+    libmysqlclient-dev && \
+    apt-get clean
 
 # Configura el directorio de trabajo
 WORKDIR /Full_Online
