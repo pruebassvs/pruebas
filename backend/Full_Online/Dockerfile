@@ -11,7 +11,7 @@ COPY requirements.txt /backend/
 # Instala las dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /Full_Online/
+COPY . /Full_Online/backend
 
 # Expone el puerto que usarás
 EXPOSE 8000
