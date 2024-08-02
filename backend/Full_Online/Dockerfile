@@ -1,0 +1,25 @@
+# Usa una imagen base oficial de Python
+FROM python:3.9-slim
+
+# Instala dependencias del sistema necesarias para mysqlclient
+RUN apt-get update && \
+    apt-get install -y \
+    gcc \
+    libmysqlclient-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configura el directorio de trabajo
+WORKDIR /app
+
+# Copia el archivo de requisitos y instala las dependencias
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copia el resto del código
+COPY . .
+
+# Expone el puerto que usará el contenedor
+EXPOSE 8000
+
+# Comando para ejecutar el servidor
+CMD ["gunicorn", "Full_Online.wsgi:application", "--bind", "0.0.0.0:8000"]
