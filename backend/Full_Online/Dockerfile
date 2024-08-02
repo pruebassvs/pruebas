@@ -1,6 +1,8 @@
 # Usa una imagen base oficial de Python
 FROM python:3.9-slim
 
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 # Instala dependencias del sistema necesarias para mysqlclient
 RUN apt-get update && \
     apt-get install -y \
@@ -12,8 +14,7 @@ RUN apt-get update && \
 WORKDIR /app
 
 # Copia el archivo de requisitos y instala las dependencias
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+
 
 # Copia el resto del código
 COPY . .
