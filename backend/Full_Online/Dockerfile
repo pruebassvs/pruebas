@@ -26,4 +26,4 @@ RUN python manage.py migrate
 RUN python manage.py collectstatic --noinput
 
 # Start the application
-CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8000 --env-file Full_Online/.env Full_Online.wsgi:application"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8000  Full_Online.wsgi:application"]
