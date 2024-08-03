@@ -14,8 +14,9 @@ from pathlib import Path
 from datetime import timedelta
 import sys
 import os
+from dotenv import load_dotenv
 if os.getenv('DJANGO_SETTINGS_MODULE') == 'Full_Online.settings':
-    from dotenv import load_dotenv
+    
     load_dotenv()
 
 
