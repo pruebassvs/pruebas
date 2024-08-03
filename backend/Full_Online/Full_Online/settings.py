@@ -13,8 +13,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import sys
-from dotenv import load_dotenv
 import os
+if os.getenv('DJANGO_SETTINGS_MODULE') == 'Full_Online.settings':
+    from dotenv import load_dotenv
+    load_dotenv()
+
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
