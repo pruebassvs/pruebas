@@ -137,7 +137,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql', 
         'NAME': 'b8yuboapln5y1qrs1veq',
         'USER': 'uvda87if58veeh8a',
-        'PASSWORD': os.environ.get("DB_PASSWORD"),
+        'PASSWORD': 'EZja9slz34Mfm0GrBVes',
         'HOST': 'b8yuboapln5y1qrs1veq-mysql.services.clever-cloud.com',
         'PORT': '3306',
     }
