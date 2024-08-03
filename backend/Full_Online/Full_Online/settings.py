@@ -23,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY =  "django-insecure-6bdkeal_-_$m2i5@2=x$ugt65r0^((pn4#c(@ay^q5eei$v5b6"
 
-STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
-STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY")
+STRIPE_SECRET_KEY = "sk_test_51PYFXKRpo1PRcWo6PDFe6P0Sdxh8X8duuxpQ68Qai9mIUYFqBHxwYOk4pSPMmBwOaRJFUezkjePibsSNzQXJF9MD00njhAevLd"
+STRIPE_PUBLISHABLE_KEY = "pk_test_51PYFXKRpo1PRcWo6dNh516IaCUkX2vbYyXSfQjR2XMxQVWsTCNMFMV0SzBa6PQCA8BUuaVk1kz30jxXepbBx4Rd200s3NDluct"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -53,8 +53,8 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = "fullstorefullstore3@gmail.com"
+EMAIL_HOST_PASSWORD = "zhcs iybw dhmf yuzm"
 
 REST_KNOX = {
     "TOKEN_TTL": timedelta(hours=10),
@@ -131,7 +131,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql', 
         'NAME': 'b8yuboapln5y1qrs1veq',
         'USER': 'uvda87if58veeh8a',
-        'PASSWORD': config("DB_PASSWORD"),
+        'PASSWORD': 'EZja9slz34Mfm0GrBVes',
         'HOST': 'b8yuboapln5y1qrs1veq-mysql.services.clever-cloud.com',
         'PORT': '3306',
     }
