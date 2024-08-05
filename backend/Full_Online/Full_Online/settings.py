@@ -44,7 +44,7 @@ ALLOWED_HOSTS = ["pruebas-production-8911.up.railway.app",
                  ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'pruebas-production-8911.up.railway.app',
+    'https://pruebas-production-8911.up.railway.app',
 ]
 
 # Application definition
