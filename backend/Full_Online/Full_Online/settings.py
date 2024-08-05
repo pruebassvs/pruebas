@@ -38,7 +38,10 @@ STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY")
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["pruebas-production-8911.up.railway.app",
+                 "localhost"
+                 "127.0.0.1"
+                 ]
 
 
 # Application definition
